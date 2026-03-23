@@ -13,31 +13,30 @@ RACE = {
     "sprint_laps": 0,
 }
 
+# Bahrain GP & Saudi Arabian GP CANCELLED (Middle East conflict) — 22 races remain
 CALENDAR = [
     {"round": 1, "name": "Australian GP", "city": "Melbourne", "lat": -37.85, "lon": 144.97, "is_sprint": False},
     {"round": 2, "name": "Chinese GP", "city": "Shanghai", "lat": 31.34, "lon": 121.22, "is_sprint": True},
     {"round": 3, "name": "Japanese GP", "city": "Suzuka", "lat": 34.84, "lon": 136.54, "is_sprint": False},
-    {"round": 4, "name": "Bahrain GP", "city": "Sakhir", "lat": 26.03, "lon": 50.51, "is_sprint": False},
-    {"round": 5, "name": "Saudi Arabian GP", "city": "Jeddah", "lat": 21.63, "lon": 39.10, "is_sprint": False},
-    {"round": 6, "name": "Miami GP", "city": "Miami", "lat": 25.96, "lon": -80.24, "is_sprint": True},
-    {"round": 7, "name": "Emilia Romagna GP", "city": "Imola", "lat": 44.34, "lon": 11.72, "is_sprint": False},
-    {"round": 8, "name": "Monaco GP", "city": "Monaco", "lat": 43.73, "lon": 7.42, "is_sprint": False},
-    {"round": 9, "name": "Spanish GP", "city": "Barcelona", "lat": 41.57, "lon": 2.26, "is_sprint": False},
-    {"round": 10, "name": "Canadian GP", "city": "Montreal", "lat": 45.50, "lon": -73.52, "is_sprint": False},
-    {"round": 11, "name": "Austrian GP", "city": "Spielberg", "lat": 47.22, "lon": 14.76, "is_sprint": True},
-    {"round": 12, "name": "British GP", "city": "Silverstone", "lat": 52.07, "lon": -1.02, "is_sprint": False},
-    {"round": 13, "name": "Belgian GP", "city": "Spa", "lat": 50.44, "lon": 5.97, "is_sprint": True},
-    {"round": 14, "name": "Hungarian GP", "city": "Budapest", "lat": 47.58, "lon": 19.25, "is_sprint": False},
-    {"round": 15, "name": "Dutch GP", "city": "Zandvoort", "lat": 52.39, "lon": 4.54, "is_sprint": False},
-    {"round": 16, "name": "Italian GP", "city": "Monza", "lat": 45.62, "lon": 9.28, "is_sprint": False},
-    {"round": 17, "name": "Azerbaijan GP", "city": "Baku", "lat": 40.37, "lon": 49.85, "is_sprint": False},
-    {"round": 18, "name": "Singapore GP", "city": "Singapore", "lat": 1.29, "lon": 103.86, "is_sprint": True},
-    {"round": 19, "name": "United States GP", "city": "Austin", "lat": 30.13, "lon": -97.64, "is_sprint": True},
-    {"round": 20, "name": "Mexico City GP", "city": "Mexico City", "lat": 19.40, "lon": -99.09, "is_sprint": False},
-    {"round": 21, "name": "Brazilian GP", "city": "Sao Paulo", "lat": -23.70, "lon": -46.70, "is_sprint": False},
-    {"round": 22, "name": "Las Vegas GP", "city": "Las Vegas", "lat": 36.11, "lon": -115.17, "is_sprint": False},
-    {"round": 23, "name": "Qatar GP", "city": "Lusail", "lat": 25.49, "lon": 51.45, "is_sprint": False},
-    {"round": 24, "name": "Abu Dhabi GP", "city": "Abu Dhabi", "lat": 24.47, "lon": 54.60, "is_sprint": False},
+    {"round": 4, "name": "Miami GP", "city": "Miami", "lat": 25.96, "lon": -80.24, "is_sprint": True},
+    {"round": 5, "name": "Emilia Romagna GP", "city": "Imola", "lat": 44.34, "lon": 11.72, "is_sprint": False},
+    {"round": 6, "name": "Monaco GP", "city": "Monaco", "lat": 43.73, "lon": 7.42, "is_sprint": False},
+    {"round": 7, "name": "Spanish GP", "city": "Barcelona", "lat": 41.57, "lon": 2.26, "is_sprint": False},
+    {"round": 8, "name": "Canadian GP", "city": "Montreal", "lat": 45.50, "lon": -73.52, "is_sprint": False},
+    {"round": 9, "name": "Austrian GP", "city": "Spielberg", "lat": 47.22, "lon": 14.76, "is_sprint": True},
+    {"round": 10, "name": "British GP", "city": "Silverstone", "lat": 52.07, "lon": -1.02, "is_sprint": False},
+    {"round": 11, "name": "Belgian GP", "city": "Spa", "lat": 50.44, "lon": 5.97, "is_sprint": True},
+    {"round": 12, "name": "Hungarian GP", "city": "Budapest", "lat": 47.58, "lon": 19.25, "is_sprint": False},
+    {"round": 13, "name": "Dutch GP", "city": "Zandvoort", "lat": 52.39, "lon": 4.54, "is_sprint": False},
+    {"round": 14, "name": "Italian GP", "city": "Monza", "lat": 45.62, "lon": 9.28, "is_sprint": False},
+    {"round": 15, "name": "Azerbaijan GP", "city": "Baku", "lat": 40.37, "lon": 49.85, "is_sprint": False},
+    {"round": 16, "name": "Singapore GP", "city": "Singapore", "lat": 1.29, "lon": 103.86, "is_sprint": True},
+    {"round": 17, "name": "United States GP", "city": "Austin", "lat": 30.13, "lon": -97.64, "is_sprint": True},
+    {"round": 18, "name": "Mexico City GP", "city": "Mexico City", "lat": 19.40, "lon": -99.09, "is_sprint": False},
+    {"round": 19, "name": "Brazilian GP", "city": "Sao Paulo", "lat": -23.70, "lon": -46.70, "is_sprint": False},
+    {"round": 20, "name": "Las Vegas GP", "city": "Las Vegas", "lat": 36.11, "lon": -115.17, "is_sprint": False},
+    {"round": 21, "name": "Qatar GP", "city": "Lusail", "lat": 25.49, "lon": 51.45, "is_sprint": False},
+    {"round": 22, "name": "Abu Dhabi GP", "city": "Abu Dhabi", "lat": 24.47, "lon": 54.60, "is_sprint": False},
 ]
 
 # Suzuka: aero/high-speed corner dominated circuit
@@ -96,17 +95,29 @@ DRIVER_ELO = {
 }
 
 # ── Team pace profiles for 2026 regs (active aero + energy management era) ──
+# Updated pre-Japanese GP with latest team intel (upgrades, reliability, aero developments)
 TEAM_PACE = {
+    # Mercedes: "party mode" energy advantage confirmed staying for Suzuka, FIA review won't apply until June 1
     "Mercedes": {"power": 95, "aero": 96, "traction": 93, "tyre_deg": 92, "reliability": 97, "cold_tyre": 0.92, "crosswind": 0.998, "rain": 0.94},
-    "Ferrari": {"power": 90, "aero": 91, "traction": 88, "tyre_deg": 85, "reliability": 88, "cold_tyre": 0.88, "crosswind": 0.994, "rain": 0.90},
-    "McLaren": {"power": 88, "aero": 88, "traction": 84, "tyre_deg": 82, "reliability": 60, "cold_tyre": 0.85, "crosswind": 0.990, "rain": 0.86},
-    "Red Bull": {"power": 82, "aero": 80, "traction": 78, "tyre_deg": 76, "reliability": 70, "cold_tyre": 0.83, "crosswind": 0.986, "rain": 0.82},
-    "Haas": {"power": 80, "aero": 78, "traction": 76, "tyre_deg": 74, "reliability": 82, "cold_tyre": 0.82, "crosswind": 0.984, "rain": 0.78},
+    # Ferrari: "Macarena wing" experimental only (FP1), but excellent chassis/aero — strong at Suzuka corners
+    "Ferrari": {"power": 90, "aero": 93, "traction": 89, "tyre_deg": 85, "reliability": 88, "cold_tyre": 0.88, "crosswind": 0.994, "rain": 0.90},
+    # McLaren: DNS crisis (both cars in China), Mercedes PU electrical fault under investigation, fix uncertain
+    "McLaren": {"power": 88, "aero": 88, "traction": 84, "tyre_deg": 82, "reliability": 55, "cold_tyre": 0.85, "crosswind": 0.990, "rain": 0.86},
+    # Red Bull: confirmed Suzuka updates for handling/graining, but high-speed corners still expose weakness
+    "Red Bull": {"power": 82, "aero": 82, "traction": 80, "tyre_deg": 76, "reliability": 72, "cold_tyre": 0.83, "crosswind": 0.986, "rain": 0.82},
+    # Haas: surprise package, cornering-focused chassis excels at Suzuka's demands
+    "Haas": {"power": 80, "aero": 80, "traction": 78, "tyre_deg": 74, "reliability": 82, "cold_tyre": 0.82, "crosswind": 0.984, "rain": 0.78},
+    # Racing Bulls: solid, no major changes — Lindblad/Lawson both performing
     "Racing Bulls": {"power": 78, "aero": 76, "traction": 74, "tyre_deg": 72, "reliability": 78, "cold_tyre": 0.81, "crosswind": 0.982, "rain": 0.77},
-    "Alpine": {"power": 76, "aero": 75, "traction": 72, "tyre_deg": 70, "reliability": 76, "cold_tyre": 0.80, "crosswind": 0.980, "rain": 0.76},
+    # Alpine: resurgence with Mercedes PU, Gasly P6 in China, only 0.3s off McLaren in sessions
+    "Alpine": {"power": 78, "aero": 77, "traction": 74, "tyre_deg": 70, "reliability": 76, "cold_tyre": 0.80, "crosswind": 0.980, "rain": 0.76},
+    # Audi: no major updates, still finding feet
     "Audi": {"power": 74, "aero": 72, "traction": 70, "tyre_deg": 68, "reliability": 72, "cold_tyre": 0.79, "crosswind": 0.978, "rain": 0.74},
+    # Williams: Mercedes PU but chassis deficit
     "Williams": {"power": 72, "aero": 70, "traction": 68, "tyre_deg": 66, "reliability": 68, "cold_tyre": 0.78, "crosswind": 0.976, "rain": 0.72},
-    "Aston Martin": {"power": 68, "aero": 66, "traction": 64, "tyre_deg": 62, "reliability": 55, "cold_tyre": 0.76, "crosswind": 0.972, "rain": 0.70},
+    # Aston Martin: Honda engine upgrade at Suzuka (reliability + vibration fix), small chassis change too
+    "Aston Martin": {"power": 70, "aero": 66, "traction": 64, "tyre_deg": 62, "reliability": 62, "cold_tyre": 0.76, "crosswind": 0.972, "rain": 0.70},
+    # Cadillac: rookie team, still at the back
     "Cadillac": {"power": 65, "aero": 62, "traction": 60, "tyre_deg": 60, "reliability": 58, "cold_tyre": 0.74, "crosswind": 0.970, "rain": 0.68},
 }
 
