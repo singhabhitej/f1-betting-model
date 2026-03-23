@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """One-click race prediction. Run: python predict.py"""
+import logging
+
 from src.auto_predict import run_prediction
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     df, bets = run_prediction()
     print("\n=== RACE PREDICTIONS ===")
     print(df.to_string(index=False))
