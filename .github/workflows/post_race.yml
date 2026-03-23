@@ -1,0 +1,20 @@
+name: Post-Race Elo & Pace Update
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Monday 06:00 UTC
+  workflow_dispatch:
+jobs:
+  post_race_update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: python -m src.auto_ingest
+      - run: python update_elo.py --auto
+      - run: python -m src.auto_predict
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Auto-update: post-race Elo and pace refresh'
