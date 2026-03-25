@@ -157,3 +157,130 @@ class TestGridPositionScore:
 
     def test_zero_position(self):
         assert grid_position_score(0) == 0
+
+
+# ── Backtest Function Tests ──
+
+class TestBrierScore:
+    def test_perfect_prediction(self):
+        from src.backtest import brier_score
+        # Perfect: predicted 1.0 for events that happened
+        probs = [1.0, 0.0, 0.0]
+        outcomes = [1.0, 0.0, 0.0]
+        assert brier_score(probs, outcomes) == pytest.approx(0.0)
+
+    def test_worst_prediction(self):
+        from src.backtest import brier_score
+        # Worst: predicted 1.0 for events that didn't happen
+        probs = [1.0, 1.0]
+        outcomes = [0.0, 0.0]
+        assert brier_score(probs, outcomes) == pytest.approx(1.0)
+
+    def test_moderate_prediction(self):
+        from src.backtest import brier_score
+        probs = [0.8, 0.2]
+        outcomes = [1.0, 0.0]
+        expected = ((0.8 - 1.0)**2 + (0.2 - 0.0)**2) / 2
+        assert brier_score(probs, outcomes) == pytest.approx(expected)
+
+    def test_empty_returns_one(self):
+        from src.backtest import brier_score
+        assert brier_score([], []) == 1.0
+
+    def test_fifty_fifty(self):
+        from src.backtest import brier_score
+        probs = [0.5, 0.5]
+        outcomes = [1.0, 0.0]
+        assert brier_score(probs, outcomes) == pytest.approx(0.25)
+
+
+class TestLogLoss:
+    def test_good_prediction_low_loss(self):
+        from src.backtest import log_loss
+        # High confidence correct prediction → low loss
+        loss = log_loss([0.95], [1.0])
+        assert loss < 0.1
+
+    def test_bad_prediction_high_loss(self):
+        from src.backtest import log_loss
+        # High confidence wrong prediction → high loss
+        loss = log_loss([0.95], [0.0])
+        assert loss > 2.0
+
+    def test_empty_returns_inf(self):
+        from src.backtest import log_loss
+        assert log_loss([], []) == float("inf")
+
+    def test_symmetric(self):
+        from src.backtest import log_loss
+        # Same loss for predicting 0.3 when outcome is 1 vs predicting 0.7 when outcome is 0
+        loss_a = log_loss([0.3], [1.0])
+        loss_b = log_loss([0.7], [0.0])
+        assert loss_a == pytest.approx(loss_b, abs=0.001)
+
+
+class TestCalibrationBuckets:
+    def test_returns_correct_structure(self):
+        from src.backtest import calibration_buckets
+        probs = [0.01, 0.02, 0.10, 0.30, 0.60]
+        outcomes = [0.0, 0.0, 0.0, 1.0, 1.0]
+        buckets = calibration_buckets(probs, outcomes)
+        assert isinstance(buckets, list)
+        for b in buckets:
+            assert "range" in b
+            assert "avg_predicted" in b
+            assert "avg_actual" in b
+            assert "count" in b
+
+    def test_all_in_one_bucket(self):
+        from src.backtest import calibration_buckets
+        probs = [0.01, 0.02, 0.03]
+        outcomes = [0.0, 0.0, 1.0]
+        buckets = calibration_buckets(probs, outcomes)
+        low_bucket = [b for b in buckets if b["range"] == "0%-5%"]
+        assert len(low_bucket) == 1
+        assert low_bucket[0]["count"] == 3
+
+
+class TestSpearmanCorrelation:
+    def test_perfect_correlation(self):
+        from src.backtest import spearman_correlation
+        order = ["A", "B", "C", "D"]
+        assert spearman_correlation(order, order) == pytest.approx(1.0)
+
+    def test_reverse_correlation(self):
+        from src.backtest import spearman_correlation
+        forward = ["A", "B", "C", "D"]
+        reverse = ["D", "C", "B", "A"]
+        assert spearman_correlation(forward, reverse) == pytest.approx(-1.0)
+
+    def test_partial_overlap(self):
+        from src.backtest import spearman_correlation
+        pred = ["A", "B", "C", "D"]
+        actual = ["A", "C", "B", "D"]
+        corr = spearman_correlation(pred, actual)
+        assert -1.0 <= corr <= 1.0
+        assert corr > 0  # Still mostly correct
+
+    def test_too_few_common_drivers(self):
+        from src.backtest import spearman_correlation
+        assert spearman_correlation(["A", "B"], ["C", "D"]) == 0.0
+
+
+class TestPodiumOverlap:
+    def test_perfect_overlap(self):
+        from src.backtest import podium_overlap
+        assert podium_overlap(["A", "B", "C"], ["A", "B", "C"]) == 3
+
+    def test_no_overlap(self):
+        from src.backtest import podium_overlap
+        assert podium_overlap(["A", "B", "C"], ["D", "E", "F"]) == 0
+
+    def test_partial_overlap(self):
+        from src.backtest import podium_overlap
+        assert podium_overlap(["A", "B", "C"], ["A", "D", "C"]) == 2
+
+    def test_order_independent(self):
+        from src.backtest import podium_overlap
+        # Same drivers in different order → still full overlap
+        assert podium_overlap(["A", "B", "C"], ["C", "A", "B"]) == 3
