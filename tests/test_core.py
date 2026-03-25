@@ -5,6 +5,12 @@ from src.kelly import kelly_fraction, find_value_bets
 from src.auto_predict import build_composites
 from src.monte_carlo import simulate_race
 from src.config import MODEL_WEIGHTS, grid_position_score
+from src.performance_metrics import (
+    get_pit_crew_rankings, get_pit_crew_for_team,
+    get_fastest_lap_rankings, get_circuit_records,
+    pit_stop_impact, get_race_fastest_laps,
+    PIT_CREW_STATS, FASTEST_LAP_PROPENSITY,
+)
 
 
 class TestEloSystem:
@@ -284,3 +290,86 @@ class TestPodiumOverlap:
         from src.backtest import podium_overlap
         # Same drivers in different order → still full overlap
         assert podium_overlap(["A", "B", "C"], ["C", "A", "B"]) == 3
+
+
+class TestPerformanceMetrics:
+    """Tests for pit crew and fastest lap performance metrics."""
+
+    def test_pit_crew_rankings_sorted_by_consistency(self):
+        rankings = get_pit_crew_rankings()
+        # Must include all teams
+        assert len(rankings) == len(PIT_CREW_STATS)
+        # Must be sorted by consistency_score descending
+        scores = [r["consistency_score"] for r in rankings]
+        assert scores == sorted(scores, reverse=True)
+        # Ferrari should be #1 (consistency_score 97)
+        assert rankings[0]["team"] == "Ferrari"
+        assert rankings[0]["consistency_score"] == 97
+
+    def test_pit_crew_lookup_by_team(self):
+        # Exact name
+        data = get_pit_crew_for_team("Ferrari")
+        assert data is not None
+        assert data["team"] == "Ferrari"
+        assert data["avg_time"] == 2.31
+        assert data["consistency_score"] == 97
+        assert data["best_time"] == 2.00
+        # Case-insensitive
+        data2 = get_pit_crew_for_team("ferrari")
+        assert data2 is not None
+        assert data2["team"] == "Ferrari"
+        # Unknown team
+        assert get_pit_crew_for_team("Nonexistent") is None
+
+    def test_fastest_lap_propensity_rankings(self):
+        rankings = get_fastest_lap_rankings()
+        assert len(rankings) == len(FASTEST_LAP_PROPENSITY)
+        # Sorted descending by propensity
+        propensities = [r["propensity"] for r in rankings]
+        assert propensities == sorted(propensities, reverse=True)
+        # Russell should be #1 (90)
+        assert rankings[0]["driver"] == "Russell"
+        assert rankings[0]["propensity"] == 90
+
+    def test_circuit_records_lookup(self):
+        records = get_circuit_records("Suzuka")
+        assert records is not None
+        assert records["circuit"] == "Suzuka"
+        assert records["race_record"]["driver"] == "Antonelli"
+        assert records["race_record"]["time"] == "1:30.965"
+        assert records["qualifying_record"]["driver"] == "Verstappen"
+        # Case-insensitive
+        records2 = get_circuit_records("suzuka")
+        assert records2 is not None
+        # Unknown circuit
+        assert get_circuit_records("Nonexistent") is None
+
+    def test_pit_stop_impact_calculation(self):
+        # Ferrari is the fastest — should have a positive impact (gains time vs average)
+        ferrari_impact = pit_stop_impact("Ferrari")
+        assert ferrari_impact is not None
+        assert ferrari_impact > 0  # Ferrari gains time vs grid average
+
+        # Haas is one of the slowest — should have a negative impact
+        haas_impact = pit_stop_impact("Haas")
+        assert haas_impact is not None
+        assert haas_impact < 0  # Haas loses time vs grid average
+
+        # Unknown team returns None
+        assert pit_stop_impact("Nonexistent") is None
+
+    def test_race_fastest_laps_2026(self):
+        results = get_race_fastest_laps(2026)
+        assert len(results) == 2  # R1 and R2
+        assert results[0]["round"] == 1
+        assert results[0]["driver"] == "Verstappen"
+        assert results[1]["round"] == 2
+        assert results[1]["driver"] == "Antonelli"
+        # Unknown year returns empty
+        assert get_race_fastest_laps(2020) == []
+
+    def test_pit_stop_impact_ferrari_approx(self):
+        # Ferrari avg_time = 2.31s, grid avg ≈ 2.72s, delta ≈ 0.41 * 2 ≈ 0.82
+        impact = pit_stop_impact("Ferrari")
+        assert impact is not None
+        assert 0.5 < impact < 1.5  # Reasonable range

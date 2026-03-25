@@ -28,6 +28,12 @@ from src.config import (
 from src.auto_predict import build_composites
 from src.monte_carlo import simulate_race
 from src.kelly import find_value_bets
+from src.performance_metrics import (
+    get_pit_crew_rankings, get_pit_crew_for_team,
+    get_fastest_lap_rankings, get_circuit_records,
+    pit_stop_impact, get_race_fastest_laps,
+    FASTEST_LAP_PROPENSITY, CIRCUIT_LAP_RECORDS,
+)
 
 # ═══════════════════════════════════════════════════════════════
 # APP SETUP
@@ -259,6 +265,13 @@ def root():
             "fantasy_all": "/api/fantasy/all",
             "team_pace": "/api/teams/pace",
             "elo_ratings": "/api/drivers/elo",
+            "pitstops": "/api/pitstops",
+            "pitstops_team": "/api/pitstops/{team}",
+            "fastest_laps": "/api/fastest-laps",
+            "fastest_laps_records": "/api/fastest-laps/records",
+            "fastest_laps_records_circuit": "/api/fastest-laps/records/{circuit}",
+            "fastest_laps_driver": "/api/fastest-laps/{driver}",
+            "performance_summary": "/api/performance/summary",
             "circuit": "/api/circuit",
             "model_config": "/api/model/config",
             "calendar": "/api/calendar",
@@ -616,6 +629,129 @@ def refresh_model():
             {"driver": d, "win_pct": mc_results[d]["win_pct"]}
             for d in sorted(mc_results, key=lambda x: mc_results[x]["win_pct"], reverse=True)[:3]
         ],
+    }
+
+
+# ── Pit Crew Performance ──
+
+@app.get("/api/pitstops", tags=["Performance"])
+def get_pitstops():
+    """Get all teams pit crew rankings sorted by consistency score.
+
+    Includes average pit stop time, best time, consistency score,
+    expected pit time (xPT), error rate, and DHL points.
+    """
+    rankings = get_pit_crew_rankings()
+    for entry in rankings:
+        entry["pit_stop_impact"] = pit_stop_impact(entry["team"])
+    return {
+        "race": RACE["name"],
+        "season": RACE["year"],
+        "teams": rankings,
+    }
+
+
+@app.get("/api/pitstops/{team}", tags=["Performance"])
+def get_pitstop_team(team: str):
+    """Get detailed pit crew data for a specific team."""
+    data = get_pit_crew_for_team(team)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"Team '{team}' not found")
+    data["pit_stop_impact"] = pit_stop_impact(team)
+    return data
+
+
+# ── Fastest Laps ──
+
+@app.get("/api/fastest-laps", tags=["Performance"])
+def get_fastest_laps():
+    """Get fastest lap propensity rankings for all drivers.
+
+    Propensity score (0-100) reflects car pace, tyre management,
+    and late-race fresh tyre strategy likelihood.
+    """
+    rankings = get_fastest_lap_rankings()
+    return {
+        "race": RACE["name"],
+        "season": RACE["year"],
+        "drivers": rankings,
+    }
+
+
+@app.get("/api/fastest-laps/records", tags=["Performance"])
+def get_fastest_lap_records():
+    """Get circuit lap records (race + qualifying) for all circuits."""
+    records = {}
+    for circuit, data in CIRCUIT_LAP_RECORDS.items():
+        records[circuit] = data
+    return {
+        "season": RACE["year"],
+        "circuits": records,
+    }
+
+
+@app.get("/api/fastest-laps/records/{circuit}", tags=["Performance"])
+def get_fastest_lap_record_circuit(circuit: str):
+    """Get lap records for a specific circuit."""
+    data = get_circuit_records(circuit)
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Circuit '{circuit}' not found. Available: {list(CIRCUIT_LAP_RECORDS.keys())}",
+        )
+    return data
+
+
+@app.get("/api/fastest-laps/{driver}", tags=["Performance"])
+def get_fastest_lap_driver(driver: str):
+    """Get fastest lap propensity stats for a specific driver."""
+    # Case-insensitive lookup
+    match = None
+    for d in FASTEST_LAP_PROPENSITY:
+        if d.lower() == driver.lower():
+            match = d
+            break
+    if not match:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Driver '{driver}' not found. Available: {list(FASTEST_LAP_PROPENSITY.keys())}",
+        )
+    return {
+        "driver": match,
+        "propensity": FASTEST_LAP_PROPENSITY[match],
+        "team": GRID.get(match, "Unknown"),
+    }
+
+
+# ── Performance Summary ──
+
+@app.get("/api/performance/summary", tags=["Performance"])
+def get_performance_summary():
+    """Combined pit crew + fastest lap overview for the current race.
+
+    Useful for a dashboard that wants both datasets in one call.
+    """
+    pit_rankings = get_pit_crew_rankings()
+    for entry in pit_rankings:
+        entry["pit_stop_impact"] = pit_stop_impact(entry["team"])
+
+    fl_rankings = get_fastest_lap_rankings()
+
+    # Current circuit records
+    current_circuit = "Suzuka"  # derived from RACE config
+    circuit_records = get_circuit_records(current_circuit)
+
+    # 2026 race fastest laps so far
+    race_fl = get_race_fastest_laps(2026)
+
+    return {
+        "race": RACE["name"],
+        "round": RACE["round"],
+        "season": RACE["year"],
+        "pit_crew_rankings": pit_rankings,
+        "fastest_lap_rankings": fl_rankings,
+        "circuit_records": circuit_records,
+        "race_fastest_laps_2026": race_fl,
     }
 
 
