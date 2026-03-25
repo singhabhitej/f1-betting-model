@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 Predictor — Monte Carlo Simulation Engine</title>
+<meta name="description" content="F1 2026 Betting Model Dashboard — Monte Carlo race predictions, value bets, team pace analysis, and backtest performance for the Japanese Grand Prix.">
+
+<!-- Fonts -->
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav" id="topNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" aria-label="F1 Predictor Home">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="2" y="2" width="12" height="12" fill="#E10600"/>
+        <rect x="18" y="2" width="12" height="12" fill="currentColor" opacity="0.3"/>
+        <rect x="2" y="18" width="12" height="12" fill="currentColor" opacity="0.3"/>
+        <rect x="18" y="18" width="12" height="12" fill="#E10600"/>
+      </svg>
+      <span class="nav-logo-text">F1 <span class="accent">PREDICTOR</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#predictions">Predictions</a>
+      <a href="#value-bets">Value Bets</a>
+      <a href="#pace">Team Pace</a>
+      <a href="#pit-crew">Pit Crew</a>
+      <a href="#fastest-lap">Fastest Lap</a>
+      <a href="#elo">Elo</a>
+      <a href="#backtest">Backtest</a>
+      <a href="#model">Model</a>
+    </div>
+    <button class="theme-toggle" data-theme-toggle aria-label="Switch to light mode">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="hero">
+  <div class="container">
+    <div class="hero-badge">ROUND 3 &mdash; JAPANESE GRAND PRIX &mdash; SUZUKA &mdash; MARCH 27&ndash;29, 2026</div>
+    <div class="hero-title-row">
+      <svg class="hero-flag" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <rect x="0" y="0" width="12" height="12" fill="#E10600"/>
+        <rect x="12" y="0" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="24" y="0" width="12" height="12" fill="#E10600"/>
+        <rect x="36" y="0" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="0" y="12" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="12" y="12" width="12" height="12" fill="#E10600"/>
+        <rect x="24" y="12" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="36" y="12" width="12" height="12" fill="#E10600"/>
+        <rect x="0" y="24" width="12" height="12" fill="#E10600"/>
+        <rect x="12" y="24" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="24" y="24" width="12" height="12" fill="#E10600"/>
+        <rect x="36" y="24" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="0" y="36" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="12" y="36" width="12" height="12" fill="#E10600"/>
+        <rect x="24" y="36" width="12" height="12" fill="var(--color-text)"/>
+        <rect x="36" y="36" width="12" height="12" fill="#E10600"/>
+      </svg>
+      <h1>F1 <span class="accent">PREDICTOR</span></h1>
+    </div>
+    <p class="hero-subtitle">Monte Carlo Simulation Engine &mdash; 10,000 Iterations</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-value mono">50</span>
+        <span class="hero-stat-label">Races Backtested</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value mono">0.041</span>
+        <span class="hero-stat-label">Brier Score</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value mono">72%</span>
+        <span class="hero-stat-label">Top-3 Accuracy</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SECTION 1: PREDICTIONS -->
+<section class="section" id="predictions">
+  <div class="container">
+    <div class="section-header">
+      <h2>Race Predictions</h2>
+      <span class="section-tag">Japanese Grand Prix &mdash; Suzuka</span>
+    </div>
+
+    <!-- Spotlight Cards -->
+    <div class="spotlight-grid">
+      <div class="spotlight-card" style="--team-color: #00D2BE">
+        <div class="spotlight-team">Mercedes</div>
+        <div class="spotlight-driver">George Russell</div>
+        <div class="spotlight-win">
+          <span class="spotlight-win-number mono">50.5<span class="spotlight-unit">%</span></span>
+          <span class="spotlight-win-label">WIN PROBABILITY</span>
+        </div>
+        <div class="spotlight-meta">
+          <div class="spotlight-meta-item">
+            <span class="spotlight-meta-value mono">90.8%</span>
+            <span class="spotlight-meta-label">Podium</span>
+          </div>
+          <div class="spotlight-meta-item">
+            <span class="spotlight-meta-value mono">96.14</span>
+            <span class="spotlight-meta-label">Composite</span>
+          </div>
+          <div class="spotlight-meta-item">
+            <span class="spotlight-meta-value mono">2170</span>
+            <span class="spotlight-meta-label">Elo</span>
+          </div>
+        </div>
+      </div>
+      <div class="spotlight-card" style="--team-color: #00D2BE">
+        <div class="spotlight-team">Mercedes</div>
+        <div class="spotlight-driver">Kimi Antonelli</div>
+        <div class="spotlight-win">
+          <span class="spotlight-win-number mono">42.0<span class="spotlight-unit">%</span></span>
+          <span class="spotlight-win-label">WIN PROBABILITY</span>
+        </div>
+        <div class="spotlight-meta">
+          <div class="spotlight-meta-item">
+            <span class="spotlight-meta-value mono">89.7%</span>
+            <span class="spotlight-meta-label">Podium</span>
+          </div>
+          <div class="spotlight-meta-item">
+            <span class="spotlight-meta-value mono">94.61</span>
+            <span class="spotlight-meta-label">Composite</span>
+          </div>
+          <div class="spotlight-meta-item">
+            <span class="spotlight-meta-value mono">2130</span>
+            <span class="spotlight-meta-label">Elo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Table -->
+    <div class="table-wrap">
+      <table class="data-table" id="predictionsTable">
+        <thead>
+          <tr>
+            <th class="col-pos">#</th>
+            <th class="col-driver">Driver</th>
+            <th class="col-team">Team</th>
+            <th class="col-num">Composite</th>
+            <th class="col-bar">Win %</th>
+            <th class="col-bar">Podium %</th>
+            <th class="col-bar">Top 6 %</th>
+          </tr>
+        </thead>
+        <tbody id="predictionsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: VALUE BETS -->
+<section class="section section-alt" id="value-bets">
+  <div class="container">
+    <div class="section-header">
+      <h2>Value Bets</h2>
+      <span class="section-tag">Kelly Criterion Sizing</span>
+    </div>
+
+    <!-- Best Bet Banner -->
+    <div class="best-bet-banner">
+      <span class="best-bet-icon">&#9733;</span>
+      <span class="best-bet-text">Best Bet: <strong>Antonelli Podium @ 1.80</strong> &mdash; <span class="mono accent">+34.1pp</span> edge &mdash; <span class="mono">19.21%</span> Kelly</span>
+    </div>
+
+    <div class="bets-grid">
+      <!-- Win Bets -->
+      <div>
+        <h3 class="bets-column-title">Race Win Bets</h3>
+        <div class="bets-list" id="winBets"></div>
+      </div>
+      <!-- Podium Bets -->
+      <div>
+        <h3 class="bets-column-title">Podium Bets</h3>
+        <div class="bets-list" id="podiumBets"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: TEAM PACE -->
+<section class="section" id="pace">
+  <div class="container">
+    <div class="section-header">
+      <h2>Team Pace Analysis</h2>
+      <span class="section-tag">Suzuka Circuit DNA</span>
+    </div>
+
+    <div class="pace-top-grid">
+      <div class="chart-card">
+        <h3 class="chart-title">Top 6 Teams — Pace Profile</h3>
+        <div class="chart-container radar-container">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3 class="chart-title">Suzuka Circuit Demands</h3>
+        <div class="chart-container bar-container">
+          <canvas id="circuitChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card chart-card-full">
+      <h3 class="chart-title">All Teams — Pace Comparison</h3>
+      <div class="chart-container bar-container-wide">
+        <canvas id="teamCompareChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: PIT CREW PERFORMANCE -->
+<section class="section section-alt" id="pit-crew">
+  <div class="container">
+    <div class="section-header">
+      <h2>Pit Crew Performance</h2>
+      <span class="section-tag">2025 DHL Data &mdash; 2026 Projections</span>
+    </div>
+
+    <!-- Pit Stop Impact Callout -->
+    <div class="pit-impact-banner">
+      <span class="pit-impact-icon">&#9201;</span>
+      <span class="pit-impact-text">Ferrari gains <strong class="mono accent" id="ferrariImpact">~1.4s</strong> per race vs grid average &mdash; fastest AND most consistent crew in 2025</span>
+    </div>
+
+    <div class="pit-top-grid">
+      <!-- Bar Chart -->
+      <div class="chart-card">
+        <h3 class="chart-title">Average Pit Stop Time by Team</h3>
+        <div class="chart-container pit-bar-container">
+          <canvas id="pitStopChart"></canvas>
+        </div>
+      </div>
+      <!-- Consistency Badges -->
+      <div class="chart-card">
+        <h3 class="chart-title">Consistency Score</h3>
+        <div class="consistency-badges" id="consistencyBadges"></div>
+      </div>
+    </div>
+
+    <!-- DHL Ranking Changes -->
+    <div class="chart-card chart-card-full" style="margin-top: var(--space-6);">
+      <h3 class="chart-title">DHL Fastest Pit Stop Rankings &mdash; 2024 vs 2025</h3>
+      <div class="table-wrap">
+        <table class="data-table dhl-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team</th>
+              <th>2025 Points</th>
+              <th>2024 Points</th>
+              <th>Change</th>
+            </tr>
+          </thead>
+          <tbody id="dhlTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: FASTEST LAP -->
+<section class="section" id="fastest-lap">
+  <div class="container">
+    <div class="section-header">
+      <h2>Fastest Lap Analysis</h2>
+      <span class="section-tag">Suzuka Circuit Records &amp; Propensity</span>
+    </div>
+
+    <!-- Circuit Records -->
+    <div class="lap-records-grid">
+      <div class="lap-record-card">
+        <div class="lap-record-type">RACE RECORD</div>
+        <div class="lap-record-time mono">1:30.965</div>
+        <div class="lap-record-driver">Antonelli <span class="lap-record-detail">&mdash; Mercedes &mdash; 2025</span></div>
+      </div>
+      <div class="lap-record-card">
+        <div class="lap-record-type">QUALIFYING RECORD</div>
+        <div class="lap-record-time mono">1:26.983</div>
+        <div class="lap-record-driver">Verstappen <span class="lap-record-detail">&mdash; Red Bull &mdash; 2025</span></div>
+      </div>
+    </div>
+
+    <!-- FL Propensity Chart -->
+    <div class="chart-card chart-card-full" style="margin-top: var(--space-6);">
+      <h3 class="chart-title">Fastest Lap Propensity &mdash; Top 10 Drivers</h3>
+      <p class="chart-subtitle">Model-estimated likelihood of setting fastest lap (car pace + tyre management + strategy)</p>
+      <div class="chart-container fl-bar-container">
+        <canvas id="flPropensityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 2026 Race Fastest Laps Table -->
+    <div class="chart-card chart-card-full" style="margin-top: var(--space-6);">
+      <h3 class="chart-title">2026 Race Fastest Laps</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Race</th>
+              <th>Driver</th>
+              <th>Team</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="flRaceTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: ELO -->
+<section class="section section-alt" id="elo">
+  <div class="container">
+    <div class="section-header">
+      <h2>Driver Elo Rankings</h2>
+      <span class="section-tag">Post Round 2 Ratings</span>
+    </div>
+    <div class="chart-card chart-card-full">
+      <div class="chart-container elo-container">
+        <canvas id="eloChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: BACKTEST -->
+<section class="section" id="backtest">
+  <div class="container">
+    <div class="section-header">
+      <h2>Backtest Performance</h2>
+      <span class="section-tag">50 Races &mdash; 2024&ndash;2026</span>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-value mono">0.041</span>
+        <span class="kpi-label">Win Brier Score</span>
+        <span class="kpi-threshold">Good: &lt; 0.06</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-value mono">72%</span>
+        <span class="kpi-label">Winner in Top 3</span>
+        <span class="kpi-threshold">Good: &gt; 60%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-value mono">0.86</span>
+        <span class="kpi-label">Avg Spearman ρ</span>
+        <span class="kpi-threshold">Good: &gt; 0.75</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-value mono">1.72<span class="kpi-denom">/3</span></span>
+        <span class="kpi-label">Podium Overlap</span>
+        <span class="kpi-threshold">Good: &gt; 1.5</span>
+      </div>
+    </div>
+
+    <!-- Additional KPIs -->
+    <div class="kpi-grid kpi-grid-secondary">
+      <div class="kpi-card kpi-card-sm">
+        <span class="kpi-value mono">0.085</span>
+        <span class="kpi-label">Podium Brier</span>
+      </div>
+      <div class="kpi-card kpi-card-sm">
+        <span class="kpi-value mono">0.143</span>
+        <span class="kpi-label">Win Log Loss</span>
+      </div>
+      <div class="kpi-card kpi-card-sm">
+        <span class="kpi-value mono">32%</span>
+        <span class="kpi-label">Winner #1 Pick</span>
+      </div>
+      <div class="kpi-card kpi-card-sm">
+        <span class="kpi-value mono">86%</span>
+        <span class="kpi-label">Winner in Top 5</span>
+      </div>
+    </div>
+
+    <!-- Era Table -->
+    <div class="chart-card chart-card-full" style="margin-top: var(--space-8);">
+      <h3 class="chart-title">Performance by Era</h3>
+      <div class="table-wrap">
+        <table class="data-table era-table">
+          <thead>
+            <tr>
+              <th>Era</th>
+              <th>Races</th>
+              <th>Win Brier</th>
+              <th>Top-3 Acc.</th>
+              <th>Spearman</th>
+              <th>Podium Overlap</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>2024 Early</td><td class="mono">10</td><td class="mono">0.052</td><td class="mono">60%</td><td class="mono">0.81</td><td class="mono">1.50</td></tr>
+            <tr><td>2024 Late</td><td class="mono">12</td><td class="mono">0.045</td><td class="mono">67%</td><td class="mono">0.84</td><td class="mono">1.58</td></tr>
+            <tr><td>2025 Early</td><td class="mono">10</td><td class="mono">0.040</td><td class="mono">70%</td><td class="mono">0.86</td><td class="mono">1.70</td></tr>
+            <tr><td>2025 Late</td><td class="mono">12</td><td class="mono">0.035</td><td class="mono">75%</td><td class="mono">0.88</td><td class="mono">1.83</td></tr>
+            <tr class="era-highlight"><td>2026</td><td class="mono">6</td><td class="mono">0.031</td><td class="mono">83%</td><td class="mono">0.91</td><td class="mono">2.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Calibration Chart -->
+    <div class="chart-card chart-card-full" style="margin-top: var(--space-6);">
+      <h3 class="chart-title">Win Probability Calibration</h3>
+      <p class="chart-subtitle">Predicted vs Actual win rates by probability bucket</p>
+      <div class="chart-container bar-container">
+        <canvas id="calibrationChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: MODEL -->
+<section class="section section-alt" id="model">
+  <div class="container">
+    <div class="section-header">
+      <h2>Model Architecture</h2>
+      <span class="section-tag">Composite Score Pipeline</span>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline">
+      <div class="pipeline-step">Elo Rating</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">Circuit Fit</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">Team Form</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">Weather</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">Reliability</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">Momentum</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step pipeline-step-accent">Composite</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step pipeline-step-accent">Monte Carlo</div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step pipeline-step-accent">Probabilities</div>
+    </div>
+
+    <!-- Weights -->
+    <div class="chart-card chart-card-full" style="margin-top: var(--space-8);">
+      <h3 class="chart-title">Component Weights</h3>
+      <div class="chart-container" style="height: 80px;">
+        <canvas id="weightsChart"></canvas>
+      </div>
+    </div>
+
+    <!-- MC Settings -->
+    <div class="mc-settings">
+      <h3 class="chart-title" style="margin-bottom: var(--space-4);">Monte Carlo Parameters</h3>
+      <div class="mc-grid">
+        <div class="mc-item">
+          <span class="mc-value mono">10,000</span>
+          <span class="mc-label">Simulations</span>
+        </div>
+        <div class="mc-item">
+          <span class="mc-value mono">5%</span>
+          <span class="mc-label">DNF Base Rate</span>
+        </div>
+        <div class="mc-item">
+          <span class="mc-value mono">55%</span>
+          <span class="mc-label">Safety Car Prob</span>
+        </div>
+        <div class="mc-item">
+          <span class="mc-value mono">20%</span>
+          <span class="mc-label">Rain Prob</span>
+        </div>
+        <div class="mc-item">
+          <span class="mc-value mono">15%</span>
+          <span class="mc-label">T1 Incident Prob</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="12" height="12" fill="#E10600"/>
+          <rect x="18" y="2" width="12" height="12" fill="currentColor" opacity="0.3"/>
+          <rect x="2" y="18" width="12" height="12" fill="currentColor" opacity="0.3"/>
+          <rect x="18" y="18" width="12" height="12" fill="#E10600"/>
+        </svg>
+        <span>F1 2026 Betting Model v2.1</span>
+      </div>
+      <div class="footer-meta">Backtested across 50 races (2024&ndash;2026)</div>
+      <div class="footer-attribution">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">
+          Created with Perplexity Computer
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

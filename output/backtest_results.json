@@ -1,0 +1,1228 @@
+{
+  "n_races": 50,
+  "n_sims_per_race": 5000,
+  "metrics": {
+    "win_brier_score": 0.0407,
+    "podium_brier_score": 0.0846,
+    "win_log_loss": 0.1428,
+    "podium_log_loss": 0.4077,
+    "winner_in_top1": 32.0,
+    "winner_in_top3": 72.0,
+    "winner_in_top5": 86.0,
+    "avg_podium_overlap": 1.72,
+    "avg_spearman_correlation": 0.8585
+  },
+  "win_calibration": [
+    {
+      "range": "0%-5%",
+      "avg_predicted": 0.0037,
+      "avg_actual": 0.0136,
+      "count": 806
+    },
+    {
+      "range": "5%-15%",
+      "avg_predicted": 0.0908,
+      "avg_actual": 0.1268,
+      "count": 71
+    },
+    {
+      "range": "15%-30%",
+      "avg_predicted": 0.2051,
+      "avg_actual": 0.1493,
+      "count": 67
+    },
+    {
+      "range": "30%-50%",
+      "avg_predicted": 0.3962,
+      "avg_actual": 0.2857,
+      "count": 42
+    },
+    {
+      "range": "50%-100%",
+      "avg_predicted": 0.6381,
+      "avg_actual": 0.5,
+      "count": 16
+    }
+  ],
+  "podium_calibration": [
+    {
+      "range": "0%-5%",
+      "avg_predicted": 0.0015,
+      "avg_actual": 0.0121,
+      "count": 661
+    },
+    {
+      "range": "5%-15%",
+      "avg_predicted": 0.0996,
+      "avg_actual": 0.22,
+      "count": 50
+    },
+    {
+      "range": "15%-30%",
+      "avg_predicted": 0.2209,
+      "avg_actual": 0.2895,
+      "count": 76
+    },
+    {
+      "range": "30%-50%",
+      "avg_predicted": 0.4017,
+      "avg_actual": 0.3514,
+      "count": 74
+    },
+    {
+      "range": "50%-100%",
+      "avg_predicted": 0.6917,
+      "avg_actual": 0.5887,
+      "count": 141
+    }
+  ],
+  "era_breakdown": {
+    "2024_early": {
+      "races": 11,
+      "avg_winner_rank": 1.45,
+      "avg_winner_prob": 51.68,
+      "avg_podium_overlap": 1.73,
+      "avg_spearman": 0.805,
+      "winner_top1_pct": 81.8,
+      "winner_top3_pct": 90.9
+    },
+    "2024_late": {
+      "races": 13,
+      "avg_winner_rank": 4.23,
+      "avg_winner_prob": 12.85,
+      "avg_podium_overlap": 1.46,
+      "avg_spearman": 0.897,
+      "winner_top1_pct": 15.4,
+      "winner_top3_pct": 46.2
+    },
+    "2025_early": {
+      "races": 12,
+      "avg_winner_rank": 2.67,
+      "avg_winner_prob": 25.38,
+      "avg_podium_overlap": 1.83,
+      "avg_spearman": 0.8795,
+      "winner_top1_pct": 16.7,
+      "winner_top3_pct": 83.3
+    },
+    "2025_late": {
+      "races": 12,
+      "avg_winner_rank": 2.67,
+      "avg_winner_prob": 20.38,
+      "avg_podium_overlap": 2.0,
+      "avg_spearman": 0.8508,
+      "winner_top1_pct": 25.0,
+      "winner_top3_pct": 75.0
+    },
+    "2026": {
+      "races": 2,
+      "avg_winner_rank": 3.5,
+      "avg_winner_prob": 16.15,
+      "avg_podium_overlap": 1.0,
+      "avg_spearman": 0.8229,
+      "winner_top1_pct": 0.0,
+      "winner_top3_pct": 50.0
+    }
+  },
+  "race_results": [
+    {
+      "sequence": 1,
+      "year": 2024,
+      "round": 1,
+      "name": "Bahrain Grand Prix",
+      "circuit": "Bahrain",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Hamilton",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Perez",
+        "Sainz"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 54.6,
+      "podium_overlap": 1,
+      "spearman_corr": 0.8887
+    },
+    {
+      "sequence": 2,
+      "year": 2024,
+      "round": 2,
+      "name": "Saudi Arabia Grand Prix",
+      "circuit": "Jeddah",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 77.1,
+      "podium_overlap": 3,
+      "spearman_corr": 0.9669
+    },
+    {
+      "sequence": 3,
+      "year": 2024,
+      "round": 3,
+      "name": "Australia Grand Prix",
+      "circuit": "Melbourne",
+      "actual_winner": "Sainz",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Sainz",
+        "Leclerc",
+        "Norris"
+      ],
+      "winner_predicted_rank": 4,
+      "winner_predicted_prob": 1.6,
+      "podium_overlap": 1,
+      "spearman_corr": 0.3316
+    },
+    {
+      "sequence": 4,
+      "year": 2024,
+      "round": 4,
+      "name": "Japan Grand Prix",
+      "circuit": "Suzuka",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Leclerc",
+        "Sainz"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Perez",
+        "Sainz"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 42.1,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9835
+    },
+    {
+      "sequence": 5,
+      "year": 2024,
+      "round": 5,
+      "name": "China Grand Prix",
+      "circuit": "Shanghai",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Hamilton",
+        "Perez"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 53.5,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9774
+    },
+    {
+      "sequence": 6,
+      "year": 2024,
+      "round": 6,
+      "name": "United States Grand Prix",
+      "circuit": "Miami",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Leclerc",
+        "Perez"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 60.6,
+      "podium_overlap": 3,
+      "spearman_corr": 0.6977
+    },
+    {
+      "sequence": 7,
+      "year": 2024,
+      "round": 7,
+      "name": "Italy Grand Prix",
+      "circuit": "Imola",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 61.2,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9609
+    },
+    {
+      "sequence": 8,
+      "year": 2024,
+      "round": 8,
+      "name": "Canada Grand Prix",
+      "circuit": "Montreal",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Russell"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 67.0,
+      "podium_overlap": 1,
+      "spearman_corr": 0.4045
+    },
+    {
+      "sequence": 9,
+      "year": 2024,
+      "round": 8.5,
+      "name": "Monaco Grand Prix",
+      "circuit": "Monaco",
+      "actual_winner": "Leclerc",
+      "predicted_top3": [
+        "Verstappen",
+        "Perez",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Leclerc",
+        "Piastri",
+        "Sainz"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 2.9,
+      "podium_overlap": 1,
+      "spearman_corr": 0.7323
+    },
+    {
+      "sequence": 10,
+      "year": 2024,
+      "round": 9,
+      "name": "Spain Grand Prix",
+      "circuit": "Barcelona",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Leclerc",
+        "Perez"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Hamilton"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 81.2,
+      "podium_overlap": 1,
+      "spearman_corr": 0.9398
+    },
+    {
+      "sequence": 11,
+      "year": 2024,
+      "round": 10,
+      "name": "Austria Grand Prix",
+      "circuit": "Spielberg",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Leclerc",
+        "Norris"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Piastri",
+        "Norris"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 66.7,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9714
+    },
+    {
+      "sequence": 12,
+      "year": 2024,
+      "round": 11,
+      "name": "United Kingdom Grand Prix",
+      "circuit": "Silverstone",
+      "actual_winner": "Hamilton",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Hamilton",
+        "Verstappen",
+        "Norris"
+      ],
+      "winner_predicted_rank": 7,
+      "winner_predicted_prob": 1.2,
+      "podium_overlap": 2,
+      "spearman_corr": 0.6346
+    },
+    {
+      "sequence": 13,
+      "year": 2024,
+      "round": 12,
+      "name": "Hungary Grand Prix",
+      "circuit": "Budapest",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Norris",
+        "Hamilton"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 12.0,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9699
+    },
+    {
+      "sequence": 14,
+      "year": 2024,
+      "round": 13,
+      "name": "Belgium Grand Prix",
+      "circuit": "Spa",
+      "actual_winner": "Russell",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Russell",
+        "Hamilton",
+        "Piastri"
+      ],
+      "winner_predicted_rank": 7,
+      "winner_predicted_prob": 1.5,
+      "podium_overlap": 1,
+      "spearman_corr": 0.9444
+    },
+    {
+      "sequence": 15,
+      "year": 2024,
+      "round": 14,
+      "name": "Netherlands Grand Prix",
+      "circuit": "Zandvoort",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Verstappen",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 18.6,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9699
+    },
+    {
+      "sequence": 16,
+      "year": 2024,
+      "round": 15,
+      "name": "Italy Grand Prix",
+      "circuit": "Monza",
+      "actual_winner": "Leclerc",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Leclerc",
+        "Piastri",
+        "Norris"
+      ],
+      "winner_predicted_rank": 5,
+      "winner_predicted_prob": 4.0,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9594
+    },
+    {
+      "sequence": 17,
+      "year": 2024,
+      "round": 16,
+      "name": "Azerbaijan Grand Prix",
+      "circuit": "Baku",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Leclerc",
+        "Russell"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 22.5,
+      "podium_overlap": 1,
+      "spearman_corr": 0.7308
+    },
+    {
+      "sequence": 18,
+      "year": 2024,
+      "round": 17,
+      "name": "Mexico Grand Prix",
+      "circuit": "Mexico City",
+      "actual_winner": "Sainz",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Sainz",
+        "Norris",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 7,
+      "winner_predicted_prob": 2.6,
+      "podium_overlap": 1,
+      "spearman_corr": 0.8662
+    },
+    {
+      "sequence": 19,
+      "year": 2024,
+      "round": 18,
+      "name": "Brazil Grand Prix",
+      "circuit": "Interlagos",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Verstappen",
+        "Leclerc",
+        "Norris"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 14.7,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9639
+    },
+    {
+      "sequence": 20,
+      "year": 2024,
+      "round": 18.5,
+      "name": "Singapore Grand Prix",
+      "circuit": "Singapore",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Verstappen",
+        "Piastri"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 31.4,
+      "podium_overlap": 2,
+      "spearman_corr": 0.982
+    },
+    {
+      "sequence": 21,
+      "year": 2024,
+      "round": 19,
+      "name": "United States Grand Prix",
+      "circuit": "Las Vegas",
+      "actual_winner": "Russell",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Russell",
+        "Hamilton",
+        "Sainz"
+      ],
+      "winner_predicted_rank": 7,
+      "winner_predicted_prob": 0.9,
+      "podium_overlap": 0,
+      "spearman_corr": 0.9188
+    },
+    {
+      "sequence": 22,
+      "year": 2024,
+      "round": 19.5,
+      "name": "United States Grand Prix",
+      "circuit": "Austin",
+      "actual_winner": "Leclerc",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Leclerc",
+        "Sainz",
+        "Verstappen"
+      ],
+      "winner_predicted_rank": 4,
+      "winner_predicted_prob": 16.1,
+      "podium_overlap": 1,
+      "spearman_corr": 0.9729
+    },
+    {
+      "sequence": 23,
+      "year": 2024,
+      "round": 20,
+      "name": "Qatar Grand Prix",
+      "circuit": "Lusail",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Leclerc",
+        "Verstappen",
+        "Norris"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Norris",
+        "Russell"
+      ],
+      "winner_predicted_rank": 5,
+      "winner_predicted_prob": 11.7,
+      "podium_overlap": 1,
+      "spearman_corr": 0.8165
+    },
+    {
+      "sequence": 24,
+      "year": 2024,
+      "round": 21,
+      "name": "United Arab Emirates Grand Prix",
+      "circuit": "Yas Marina",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Sainz",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 29.8,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9323
+    },
+    {
+      "sequence": 25,
+      "year": 2025,
+      "round": 1,
+      "name": "Australia Grand Prix",
+      "circuit": "Melbourne",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Verstappen",
+        "Russell"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 34.6,
+      "podium_overlap": 1,
+      "spearman_corr": 0.8887
+    },
+    {
+      "sequence": 26,
+      "year": 2025,
+      "round": 2,
+      "name": "China Grand Prix",
+      "circuit": "Shanghai",
+      "actual_winner": "Hamilton",
+      "predicted_top3": [
+        "Norris",
+        "Leclerc",
+        "Russell"
+      ],
+      "actual_top3": [
+        "Hamilton",
+        "Piastri",
+        "Verstappen"
+      ],
+      "winner_predicted_rank": 6,
+      "winner_predicted_prob": 11.0,
+      "podium_overlap": 0,
+      "spearman_corr": 0.9263
+    },
+    {
+      "sequence": 27,
+      "year": 2025,
+      "round": 2.5,
+      "name": "Saudi Arabian Grand Prix",
+      "circuit": "Jeddah",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Verstappen",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 17.2,
+      "podium_overlap": 2,
+      "spearman_corr": 0.985
+    },
+    {
+      "sequence": 28,
+      "year": 2025,
+      "round": 3.5,
+      "name": "Japanese Grand Prix",
+      "circuit": "Suzuka",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 17.3,
+      "podium_overlap": 3,
+      "spearman_corr": 0.991
+    },
+    {
+      "sequence": 29,
+      "year": 2025,
+      "round": 4,
+      "name": "United States Grand Prix",
+      "circuit": "Miami",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Piastri",
+        "Hamilton"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 29.3,
+      "podium_overlap": 2,
+      "spearman_corr": 0.5519
+    },
+    {
+      "sequence": 30,
+      "year": 2025,
+      "round": 4.5,
+      "name": "Bahrain Grand Prix",
+      "circuit": "Bahrain",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Russell",
+        "Norris"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 34.1,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9789
+    },
+    {
+      "sequence": 31,
+      "year": 2025,
+      "round": 5,
+      "name": "Italy Grand Prix",
+      "circuit": "Imola",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 8.1,
+      "podium_overlap": 3,
+      "spearman_corr": 0.9895
+    },
+    {
+      "sequence": 32,
+      "year": 2025,
+      "round": 6,
+      "name": "Monaco Grand Prix",
+      "circuit": "Monaco",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Leclerc",
+        "Piastri"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 46.0,
+      "podium_overlap": 2,
+      "spearman_corr": 0.8782
+    },
+    {
+      "sequence": 33,
+      "year": 2025,
+      "round": 7,
+      "name": "Spain Grand Prix",
+      "circuit": "Barcelona",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Norris",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 37.5,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9386
+    },
+    {
+      "sequence": 34,
+      "year": 2025,
+      "round": 8,
+      "name": "Canada Grand Prix",
+      "circuit": "Montreal",
+      "actual_winner": "Russell",
+      "predicted_top3": [
+        "Norris",
+        "Piastri",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Russell",
+        "Verstappen",
+        "Antonelli"
+      ],
+      "winner_predicted_rank": 6,
+      "winner_predicted_prob": 0.2,
+      "podium_overlap": 1,
+      "spearman_corr": 0.7383
+    },
+    {
+      "sequence": 35,
+      "year": 2025,
+      "round": 9,
+      "name": "Austria Grand Prix",
+      "circuit": "Spielberg",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Piastri",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 31.2,
+      "podium_overlap": 2,
+      "spearman_corr": 0.818
+    },
+    {
+      "sequence": 36,
+      "year": 2025,
+      "round": 10,
+      "name": "United Kingdom Grand Prix",
+      "circuit": "Silverstone",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Piastri",
+        "Hulkenberg"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 38.1,
+      "podium_overlap": 2,
+      "spearman_corr": 0.8692
+    },
+    {
+      "sequence": 37,
+      "year": 2025,
+      "round": 10.5,
+      "name": "Hungarian Grand Prix",
+      "circuit": "Budapest",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Hamilton"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Piastri",
+        "Russell"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 40.4,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9669
+    },
+    {
+      "sequence": 38,
+      "year": 2025,
+      "round": 11,
+      "name": "Belgium Grand Prix",
+      "circuit": "Spa",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Leclerc"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Piastri",
+        "Norris"
+      ],
+      "winner_predicted_rank": 6,
+      "winner_predicted_prob": 0.8,
+      "podium_overlap": 2,
+      "spearman_corr": 0.8286
+    },
+    {
+      "sequence": 39,
+      "year": 2025,
+      "round": 11.5,
+      "name": "Dutch Grand Prix",
+      "circuit": "Zandvoort",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Verstappen",
+        "Hadjar"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 46.7,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9008
+    },
+    {
+      "sequence": 40,
+      "year": 2025,
+      "round": 12,
+      "name": "Italy Grand Prix",
+      "circuit": "Monza",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 2.8,
+      "podium_overlap": 3,
+      "spearman_corr": 0.9925
+    },
+    {
+      "sequence": 41,
+      "year": 2025,
+      "round": 13,
+      "name": "Azerbaijan Grand Prix",
+      "circuit": "Baku",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Piastri",
+        "Norris",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Russell",
+        "Sainz"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 7.4,
+      "podium_overlap": 1,
+      "spearman_corr": 0.6135
+    },
+    {
+      "sequence": 42,
+      "year": 2025,
+      "round": 14,
+      "name": "Singapore Grand Prix",
+      "circuit": "Singapore",
+      "actual_winner": "Russell",
+      "predicted_top3": [
+        "Norris",
+        "Verstappen",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Russell",
+        "Verstappen",
+        "Norris"
+      ],
+      "winner_predicted_rank": 4,
+      "winner_predicted_prob": 1.4,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9594
+    },
+    {
+      "sequence": 43,
+      "year": 2025,
+      "round": 15,
+      "name": "United States Grand Prix",
+      "circuit": "Austin",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Russell",
+        "Sainz"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 37.7,
+      "podium_overlap": 1,
+      "spearman_corr": 0.5414
+    },
+    {
+      "sequence": 44,
+      "year": 2025,
+      "round": 16,
+      "name": "Mexico Grand Prix",
+      "circuit": "Mexico City",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Verstappen",
+        "Russell",
+        "Norris"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Leclerc",
+        "Verstappen"
+      ],
+      "winner_predicted_rank": 3,
+      "winner_predicted_prob": 13.0,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9368
+    },
+    {
+      "sequence": 45,
+      "year": 2025,
+      "round": 17,
+      "name": "Brazil Grand Prix",
+      "circuit": "Interlagos",
+      "actual_winner": "Norris",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Russell"
+      ],
+      "actual_top3": [
+        "Norris",
+        "Antonelli",
+        "Russell"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 17.3,
+      "podium_overlap": 2,
+      "spearman_corr": 0.7308
+    },
+    {
+      "sequence": 46,
+      "year": 2025,
+      "round": 18,
+      "name": "United States Grand Prix",
+      "circuit": "Las Vegas",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Verstappen",
+        "Russell",
+        "Norris"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Norris",
+        "Russell"
+      ],
+      "winner_predicted_rank": 1,
+      "winner_predicted_prob": 39.9,
+      "podium_overlap": 3,
+      "spearman_corr": 0.9414
+    },
+    {
+      "sequence": 47,
+      "year": 2025,
+      "round": 19,
+      "name": "Qatar Grand Prix",
+      "circuit": "Lusail",
+      "actual_winner": "Piastri",
+      "predicted_top3": [
+        "Verstappen",
+        "Norris",
+        "Russell"
+      ],
+      "actual_top3": [
+        "Piastri",
+        "Russell",
+        "Norris"
+      ],
+      "winner_predicted_rank": 4,
+      "winner_predicted_prob": 9.3,
+      "podium_overlap": 2,
+      "spearman_corr": 0.818
+    },
+    {
+      "sequence": 48,
+      "year": 2025,
+      "round": 24,
+      "name": "Abu Dhabi Grand Prix",
+      "circuit": "Yas Marina",
+      "actual_winner": "Verstappen",
+      "predicted_top3": [
+        "Norris",
+        "Verstappen",
+        "Russell"
+      ],
+      "actual_top3": [
+        "Verstappen",
+        "Piastri",
+        "Norris"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 27.8,
+      "podium_overlap": 2,
+      "spearman_corr": 0.9789
+    },
+    {
+      "sequence": 49,
+      "year": 2026,
+      "round": 1,
+      "name": "Australian Grand Prix",
+      "circuit": "Melbourne",
+      "actual_winner": "Russell",
+      "predicted_top3": [
+        "Norris",
+        "Russell",
+        "Piastri"
+      ],
+      "actual_top3": [
+        "Russell",
+        "Antonelli",
+        "Leclerc"
+      ],
+      "winner_predicted_rank": 2,
+      "winner_predicted_prob": 23.5,
+      "podium_overlap": 1,
+      "spearman_corr": 0.8029
+    },
+    {
+      "sequence": 50,
+      "year": 2026,
+      "round": 2,
+      "name": "Chinese Grand Prix",
+      "circuit": "Shanghai",
+      "actual_winner": "Antonelli",
+      "predicted_top3": [
+        "Russell",
+        "Norris",
+        "Verstappen"
+      ],
+      "actual_top3": [
+        "Antonelli",
+        "Russell",
+        "Hamilton"
+      ],
+      "winner_predicted_rank": 5,
+      "winner_predicted_prob": 8.8,
+      "podium_overlap": 1,
+      "spearman_corr": 0.8429
+    }
+  ]
+}
