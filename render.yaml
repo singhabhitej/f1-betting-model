@@ -1,0 +1,14 @@
+# Render Blueprint — one-click deploy
+# Go to https://render.com/deploy and connect this repo
+
+services:
+  - type: web
+    name: f1-predictor-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+    healthCheckPath: /api/health
+    autoDeploy: true  # Auto-deploy on every push to main

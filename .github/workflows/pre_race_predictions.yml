@@ -1,0 +1,100 @@
+name: Pre-Race Predictions
+
+# Runs every Wednesday and Friday at 10:00 UTC (2pm Dubai)
+# Wednesday: early predictions before FP1
+# Friday: updated predictions after FP1/FP2 data
+on:
+  schedule:
+    - cron: '0 10 * * 3'  # Wednesday 10:00 UTC
+    - cron: '0 10 * * 5'  # Friday 10:00 UTC
+  workflow_dispatch:       # Manual trigger anytime
+
+jobs:
+  generate_predictions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run prediction pipeline
+        run: |
+          echo "=== Running F1 Prediction Pipeline ==="
+          python -c "
+          import json
+          from src.auto_predict import run_prediction
+          from src.config import RACE
+          
+          print(f'Race: {RACE[\"name\"]} (Round {RACE[\"round\"]}, {RACE[\"year\"]})')
+          print(f'Circuit: {RACE[\"circuit\"]}')
+          
+          df, bets = run_prediction()
+          
+          print('\nTop 5 Predictions:')
+          for _, row in df.head(5).iterrows():
+              print(f'  {row[\"Driver\"]:15s} | Win: {row[\"Win%\"]:5.1f}% | Podium: {row[\"Podium%\"]:5.1f}%')
+          
+          print(f'\nFiles saved to output/')
+          print(f'Value bets (BACK): {sum(1 for b in bets[\"win_bets\"] if b[\"verdict\"]==\"BACK\")} win, {sum(1 for b in bets[\"podium_bets\"] if b[\"verdict\"]==\"BACK\")} podium')
+          "
+
+      - name: Generate API-friendly JSON output
+        run: |
+          python -c "
+          import json
+          from src.auto_predict import run_prediction, build_composites
+          from src.config import RACE, GRID, DRIVER_ELO, TEAM_PACE, TEAM_FORM, SEASON_MOMENTUM, MC_SETTINGS
+          from src.performance_metrics import get_pit_crew_rankings, get_fastest_lap_rankings
+          
+          composites = build_composites()
+          df, bets = run_prediction()
+          
+          # Build comprehensive API-ready JSON
+          output = {
+              'race': RACE,
+              'predictions': [],
+              'value_bets': bets,
+              'team_pace': {t: dict(p) for t, p in TEAM_PACE.items()},
+              'elo_ratings': DRIVER_ELO,
+              'pit_crew_rankings': get_pit_crew_rankings(),
+              'fastest_lap_rankings': get_fastest_lap_rankings(),
+              'model_config': {
+                  'mc_settings': MC_SETTINGS,
+                  'backtest': {'races': 50, 'win_brier': 0.041, 'winner_top3': 72.0, 'spearman': 0.86},
+              },
+          }
+          
+          for _, row in df.iterrows():
+              output['predictions'].append({
+                  'driver': row['Driver'],
+                  'team': row['Team'],
+                  'composite': row['Composite'],
+                  'win_pct': row['Win%'],
+                  'podium_pct': row['Podium%'],
+                  'top6_pct': row['Top6%'],
+                  'elo': DRIVER_ELO.get(row['Driver'], 1500),
+              })
+          
+          with open('output/latest_predictions.json', 'w') as f:
+              json.dump(output, f, indent=2)
+          print('Saved output/latest_predictions.json')
+          "
+
+      - name: Commit and push predictions
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'auto: pre-race predictions for ${{ env.RACE_NAME }}'
+          file_pattern: 'output/*'
+        env:
+          RACE_NAME: "upcoming race"
