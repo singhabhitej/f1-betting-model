@@ -32,6 +32,7 @@ from src.performance_metrics import (
     get_pit_crew_rankings, get_pit_crew_for_team,
     get_fastest_lap_rankings, get_circuit_records,
     pit_stop_impact, get_race_fastest_laps,
+    get_destructor_rankings, get_destructor_for_driver,
     FASTEST_LAP_PROPENSITY, CIRCUIT_LAP_RECORDS,
 )
 
@@ -134,6 +135,10 @@ def _build_driver_metrics(driver: str, composites: dict, mc_results: dict) -> di
         "team_form": TEAM_FORM.get(team, 50),
         "pit_crew_consistency": pit.get("consistency_score", 50),
         "pit_avg_time": pit.get("avg_time", 3.0),
+        # Destructor metrics
+        "dnf_propensity": (get_destructor_for_driver(driver) or {}).get("propensity", 30),
+        "dnf_rate": (get_destructor_for_driver(driver) or {}).get("dnf_rate", 5.0),
+        "crash_rate": (get_destructor_for_driver(driver) or {}).get("crash_rate", 2.0),
     }
 
 
@@ -234,6 +239,8 @@ def root():
             "fastest_laps_records_circuit": "/api/fastest-laps/records/{circuit}",
             "fastest_laps_driver": "/api/fastest-laps/{driver}",
             "performance_summary": "/api/performance/summary",
+            "destructors": "/api/destructors",
+            "destructors_driver": "/api/destructors/{driver}",
             "circuit": "/api/circuit",
             "model_config": "/api/model/config",
             "calendar": "/api/calendar",
@@ -506,6 +513,53 @@ def get_all_rankings():
         "drivers": drivers,
         "constructors": constructors,
     }
+
+
+# ── Destructors (DNF / Crash Propensity) ──
+
+@app.get("/api/destructors", tags=["Destructors"])
+def get_destructors(
+    sort_by: str = Query("propensity", description="Sort by: propensity, dnf_rate, crash_rate, total_dnfs"),
+):
+    """Get destructor rankings — drivers most likely to DNF or crash.
+    
+    Propensity score (0-100) combines driver crash history, team reliability,
+    and car mechanical DNF rate across 2024-2025-2026 seasons.
+    Higher = more likely to not finish the race.
+    
+    Breakdown: crash_dnfs (driver error/contact), mechanical_dnfs (car failure),
+    team_fault_dnfs (pit errors, DNS, strategy failures).
+    """
+    rankings = get_destructor_rankings()
+    
+    # Fill in team names from GRID
+    for r in rankings:
+        r["team"] = GRID.get(r["driver"], "Unknown")
+    
+    valid_sorts = {"propensity", "dnf_rate", "crash_rate", "total_dnfs"}
+    key = sort_by if sort_by in valid_sorts else "propensity"
+    rankings.sort(key=lambda x: x[key], reverse=True)
+    
+    for i, r in enumerate(rankings):
+        r["rank"] = i + 1
+
+    return {
+        "race": RACE["name"],
+        "round": RACE["round"],
+        "season": RACE["year"],
+        "sorted_by": key,
+        "drivers": rankings,
+    }
+
+
+@app.get("/api/destructors/{driver}", tags=["Destructors"])
+def get_destructor(driver: str):
+    """Get detailed DNF/crash stats for a specific driver."""
+    stats = get_destructor_for_driver(driver)
+    if not stats:
+        raise HTTPException(status_code=404, detail=f"Driver '{driver}' not found")
+    stats["team"] = GRID.get(stats["driver"], "Unknown")
+    return stats
 
 
 # ── Team & Driver Data ──

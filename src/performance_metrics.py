@@ -306,3 +306,214 @@ def get_race_fastest_laps(year=2026):
     if year == 2026:
         return RACE_FASTEST_LAPS_2026
     return []
+
+
+# ═══════════════════════════════════════════════════════════════
+# DESTRUCTOR DATA — DNF / Crash Propensity
+# ═══════════════════════════════════════════════════════════════
+# Sources: F1.com results, FOX Sports DNF stats, Speedcafe reports,
+# 2024 full season + 2025 full season + 2026 R1-R2 data.
+# Categories: mechanical (PU, gearbox, hydraulics), crash (driver error
+# or contact), and team-fault (pit errors, strategy-induced DNS).
+
+DESTRUCTOR_STATS = {
+    # driver: {dnf_2024, dnf_2025, dnf_2026, crash_dnfs, mechanical_dnfs,
+    #          races_started, dnf_rate (%), crash_rate (%), propensity (0-100)}
+    "Verstappen": {
+        "dnf_2024": 2, "dnf_2025": 3, "dnf_2026": 1,   # 2026: China coolant fault
+        "crash_dnfs": 1, "mechanical_dnfs": 4, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 12.0, "crash_rate": 2.0,
+        "propensity": 45,  # Car unreliable in 2026, but driver rarely at fault
+        "notes": "Red Bull reliability issues in 2026 (coolant fault China). Driver error rare.",
+    },
+    "Hadjar": {
+        "dnf_2024": 0, "dnf_2025": 2, "dnf_2026": 1,   # 2026: Aus PU failure
+        "crash_dnfs": 1, "mechanical_dnfs": 2, "team_fault_dnfs": 0,
+        "races_started": 26, "dnf_rate": 11.5, "crash_rate": 3.8,
+        "propensity": 52,  # Rookie aggression + Red Bull reliability
+        "notes": "Aggressive rookie in an unreliable car. Australia PU failure.",
+    },
+    "Norris": {
+        "dnf_2024": 1, "dnf_2025": 3, "dnf_2026": 1,   # 2026: Aus DNS
+        "crash_dnfs": 2, "mechanical_dnfs": 2, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 10.0, "crash_rate": 4.0,
+        "propensity": 48,  # McLaren electrical crisis, occasional driver error
+        "notes": "McLaren PU electrical fault in 2026. Saudi 2025 qualifying crash.",
+    },
+    "Piastri": {
+        "dnf_2024": 1, "dnf_2025": 2, "dnf_2026": 1,   # 2026: Aus DNS (crash to grid)
+        "crash_dnfs": 2, "mechanical_dnfs": 1, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 8.0, "crash_rate": 4.0,
+        "propensity": 50,  # DNS crash Australia 2026 + McLaren reliability
+        "notes": "Crashed on way to grid in Australia 2026. McLaren electrical issues.",
+    },
+    "Russell": {
+        "dnf_2024": 1, "dnf_2025": 0, "dnf_2026": 0,
+        "crash_dnfs": 0, "mechanical_dnfs": 1, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 2.0, "crash_rate": 0.0,
+        "propensity": 8,  # Most reliable driver on the grid — 0 DNFs in 2025
+        "notes": "Only driver to start and finish every race in 2025. Ultra-consistent.",
+    },
+    "Antonelli": {
+        "dnf_2024": 0, "dnf_2025": 2, "dnf_2026": 0,
+        "crash_dnfs": 1, "mechanical_dnfs": 1, "team_fault_dnfs": 0,
+        "races_started": 26, "dnf_rate": 7.7, "crash_rate": 3.8,
+        "propensity": 28,  # Young but in reliable Mercedes, occasional rookie error
+        "notes": "Rookie errors but Mercedes car is bulletproof. Learning fast.",
+    },
+    "Leclerc": {
+        "dnf_2024": 2, "dnf_2025": 2, "dnf_2026": 0,
+        "crash_dnfs": 1, "mechanical_dnfs": 3, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 8.0, "crash_rate": 2.0,
+        "propensity": 25,  # Solid, occasional mechanical. Ferrari reliable in 2026
+        "notes": "Ferrari 2026 reliability strong. Historically some mechanical DNFs.",
+    },
+    "Hamilton": {
+        "dnf_2024": 2, "dnf_2025": 1, "dnf_2026": 0,
+        "crash_dnfs": 1, "mechanical_dnfs": 2, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 6.0, "crash_rate": 2.0,
+        "propensity": 20,  # Most experienced, rarely crashes. Ferrari reliable
+        "notes": "68 career fastest laps, rarely makes mistakes. Ferrari car solid.",
+    },
+    "Alonso": {
+        "dnf_2024": 3, "dnf_2025": 2, "dnf_2026": 1,   # 2026: Aus retired
+        "crash_dnfs": 0, "mechanical_dnfs": 5, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 12.0, "crash_rate": 0.0,
+        "propensity": 62,  # Aston Martin reliability is terrible — not driver's fault
+        "notes": "Aston Martin worst reliability on grid. Honda PU issues. Never driver error.",
+    },
+    "Stroll": {
+        "dnf_2024": 1, "dnf_2025": 1, "dnf_2026": 1,   # 2026: Aus not classified
+        "crash_dnfs": 1, "mechanical_dnfs": 1, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 6.0, "crash_rate": 2.0,
+        "propensity": 58,  # Aston Martin reliability + some driver errors
+        "notes": "Aston Martin unreliable. Occasionally poor positioning leads to contact.",
+    },
+    "Bearman": {
+        "dnf_2024": 0, "dnf_2025": 1, "dnf_2026": 0,
+        "crash_dnfs": 0, "mechanical_dnfs": 1, "team_fault_dnfs": 0,
+        "races_started": 27, "dnf_rate": 3.7, "crash_rate": 0.0,
+        "propensity": 18,  # Clean driver, Haas reasonably reliable
+        "notes": "Impressively clean for a rookie. Haas car decent reliability.",
+    },
+    "Ocon": {
+        "dnf_2024": 2, "dnf_2025": 2, "dnf_2026": 0,
+        "crash_dnfs": 2, "mechanical_dnfs": 2, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 8.0, "crash_rate": 4.0,
+        "propensity": 38,  # History of contact incidents, mid-pack battles
+        "notes": "Known for aggressive defending. Multiple contact-related DNFs.",
+    },
+    "Gasly": {
+        "dnf_2024": 1, "dnf_2025": 1, "dnf_2026": 0,
+        "crash_dnfs": 0, "mechanical_dnfs": 2, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 4.0, "crash_rate": 0.0,
+        "propensity": 22,  # Clean driver, Alpine reasonably reliable
+        "notes": "Rarely involved in incidents. Mechanical DNFs only.",
+    },
+    "Colapinto": {
+        "dnf_2024": 1, "dnf_2025": 1, "dnf_2026": 0,
+        "crash_dnfs": 1, "mechanical_dnfs": 1, "team_fault_dnfs": 0,
+        "races_started": 30, "dnf_rate": 6.7, "crash_rate": 3.3,
+        "propensity": 35,  # Some crash history from Williams days
+        "notes": "Had notable crashes at Williams in 2024. Calmer in 2025-26.",
+    },
+    "Lawson": {
+        "dnf_2024": 0, "dnf_2025": 2, "dnf_2026": 0,
+        "crash_dnfs": 1, "mechanical_dnfs": 1, "team_fault_dnfs": 0,
+        "races_started": 28, "dnf_rate": 7.1, "crash_rate": 3.6,
+        "propensity": 32,  # Aggressive but learning. Racing Bulls decent reliability
+        "notes": "Aggressive racer, occasionally over-commits. Learning curve.",
+    },
+    "Lindblad": {
+        "dnf_2024": 0, "dnf_2025": 0, "dnf_2026": 0,
+        "crash_dnfs": 0, "mechanical_dnfs": 0, "team_fault_dnfs": 0,
+        "races_started": 2, "dnf_rate": 0.0, "crash_rate": 0.0,
+        "propensity": 30,  # Rookie — too little data, assume mid-risk
+        "notes": "2026 rookie, strong debut. Limited data — default mid-risk.",
+    },
+    "Hulkenberg": {
+        "dnf_2024": 1, "dnf_2025": 1, "dnf_2026": 1,   # 2026: Aus DNS technical
+        "crash_dnfs": 0, "mechanical_dnfs": 2, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 6.0, "crash_rate": 0.0,
+        "propensity": 35,  # Audi teething issues. Driver is clean.
+        "notes": "Clean driver but Audi (new manufacturer) has reliability unknowns.",
+    },
+    "Bortoleto": {
+        "dnf_2024": 0, "dnf_2025": 2, "dnf_2026": 0,
+        "crash_dnfs": 2, "mechanical_dnfs": 0, "team_fault_dnfs": 0,
+        "races_started": 26, "dnf_rate": 7.7, "crash_rate": 7.7,
+        "propensity": 55,  # Highest crash rate — Sao Paulo 57g impact, aggressive
+        "notes": "Highest crash-to-DNF ratio on grid. 57g Sao Paulo impact. Overly aggressive.",
+    },
+    "Sainz": {
+        "dnf_2024": 2, "dnf_2025": 1, "dnf_2026": 0,
+        "crash_dnfs": 1, "mechanical_dnfs": 2, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 6.0, "crash_rate": 2.0,
+        "propensity": 28,  # Solid, Williams reasonably reliable
+        "notes": "Experienced, rarely at fault. Williams mechanical reliability mid-pack.",
+    },
+    "Albon": {
+        "dnf_2024": 1, "dnf_2025": 1, "dnf_2026": 0,
+        "crash_dnfs": 0, "mechanical_dnfs": 2, "team_fault_dnfs": 0,
+        "races_started": 50, "dnf_rate": 4.0, "crash_rate": 0.0,
+        "propensity": 25,  # Clean driver, mechanical only
+        "notes": "Very clean on-track. DNFs are always mechanical.",
+    },
+    "Bottas": {
+        "dnf_2024": 2, "dnf_2025": 1, "dnf_2026": 1,   # 2026: Aus fuel system
+        "crash_dnfs": 0, "mechanical_dnfs": 3, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 8.0, "crash_rate": 0.0,
+        "propensity": 48,  # Cadillac new team, lots of teething issues
+        "notes": "Clean driver but Cadillac (new team) has worst reliability.",
+    },
+    "Perez": {
+        "dnf_2024": 3, "dnf_2025": 2, "dnf_2026": 0,
+        "crash_dnfs": 2, "mechanical_dnfs": 2, "team_fault_dnfs": 1,
+        "races_started": 50, "dnf_rate": 10.0, "crash_rate": 4.0,
+        "propensity": 50,  # Cadillac reliability + some driver errors
+        "notes": "Crash-prone in recent years. Cadillac car also unreliable.",
+    },
+}
+
+
+def get_destructor_rankings():
+    """Return all drivers ranked by DNF propensity (highest risk first)."""
+    rankings = []
+    for driver, stats in DESTRUCTOR_STATS.items():
+        rankings.append({
+            "driver": driver,
+            "team": None,  # Filled by caller from GRID
+            "propensity": stats["propensity"],
+            "dnf_rate": stats["dnf_rate"],
+            "crash_rate": stats["crash_rate"],
+            "total_dnfs": stats["dnf_2024"] + stats["dnf_2025"] + stats["dnf_2026"],
+            "crash_dnfs": stats["crash_dnfs"],
+            "mechanical_dnfs": stats["mechanical_dnfs"],
+            "team_fault_dnfs": stats["team_fault_dnfs"],
+            "races_started": stats["races_started"],
+            "notes": stats["notes"],
+        })
+    rankings.sort(key=lambda x: x["propensity"], reverse=True)
+    return rankings
+
+
+def get_destructor_for_driver(driver_name):
+    """Return destructor stats for a specific driver, or None."""
+    for name, stats in DESTRUCTOR_STATS.items():
+        if name.lower() == driver_name.lower():
+            return {
+                "driver": name,
+                "propensity": stats["propensity"],
+                "dnf_rate": stats["dnf_rate"],
+                "crash_rate": stats["crash_rate"],
+                "dnf_2024": stats["dnf_2024"],
+                "dnf_2025": stats["dnf_2025"],
+                "dnf_2026": stats["dnf_2026"],
+                "total_dnfs": stats["dnf_2024"] + stats["dnf_2025"] + stats["dnf_2026"],
+                "crash_dnfs": stats["crash_dnfs"],
+                "mechanical_dnfs": stats["mechanical_dnfs"],
+                "team_fault_dnfs": stats["team_fault_dnfs"],
+                "races_started": stats["races_started"],
+                "notes": stats["notes"],
+            }
+    return None
