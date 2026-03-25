@@ -1,13 +1,13 @@
 name: Pre-Race Predictions
 
-# Runs every Wednesday and Friday at 10:00 UTC (2pm Dubai)
+# Runs every Wednesday, Friday, and Saturday at 10:00 UTC (2pm Dubai)
 # Wednesday: early predictions before FP1
 # Friday: updated predictions after FP1/FP2 data
+# Saturday: final predictions after qualifying
 on:
   schedule:
-    - cron: '0 10 * * 3'  # Wednesday 10:00 UTC
-    - cron: '0 10 * * 5'  # Friday 10:00 UTC
-  workflow_dispatch:       # Manual trigger anytime
+    - cron: '0 10 * * 3,5,6'  # Wed, Fri, Sat at 10:00 UTC (2pm Dubai)
+  workflow_dispatch:            # Manual trigger anytime
 
 jobs:
   generate_predictions:
