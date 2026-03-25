@@ -43,11 +43,12 @@ app = FastAPI(
     title="F1 Predictor API",
     description=(
         "Monte Carlo simulation engine for F1 race predictions. "
-        "Provides driver/constructor probabilities, fantasy pricing, "
+        "Provides driver/constructor rankings, performance metrics, "
         "Elo ratings, value bets, and team pace data. "
+        "Designed for downstream pricing engines (fantasy apps, betting platforms). "
         "Backtested across 50 races — Win Brier 0.041, Top-3 accuracy 72%."
     ),
-    version="2.1.0",
+    version="2.2.0",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -88,145 +89,106 @@ def _get_cached():
 
 
 # ═══════════════════════════════════════════════════════════════
-# FANTASY PRICING ENGINE
+# DRIVER & CONSTRUCTOR METRICS BUILDERS
 # ═══════════════════════════════════════════════════════════════
-
-# Fantasy F1 typical budget: 100M total, 5 drivers + 2 constructors
-# Price range: drivers 5M-30M, constructors 5M-25M
-FANTASY_CONFIG = {
-    "total_budget": 100.0,  # millions
-    "driver_min_price": 5.0,
-    "driver_max_price": 30.0,
-    "constructor_min_price": 5.0,
-    "constructor_max_price": 25.0,
-    # Points-based pricing weights
-    "win_points": 25,
-    "podium_points": 15,
-    "top6_points": 8,
-    "composite_weight": 0.4,
-    "win_weight": 0.3,
-    "podium_weight": 0.2,
-    "form_weight": 0.1,
-}
+# These return raw rankings and metrics — NO prices.
+# Your app's pricing engine consumes these to set its own prices.
 
 
-def _calculate_driver_price(driver: str, composites: dict, mc_results: dict) -> dict:
-    """Calculate fantasy price for a single driver based on model output."""
-    cfg = FANTASY_CONFIG
+def _build_driver_metrics(driver: str, composites: dict, mc_results: dict) -> dict:
+    """Build raw performance metrics for a single driver."""
     team = GRID.get(driver, "Unknown")
     composite = composites.get(driver, 50)
     mc = mc_results.get(driver, {"win_pct": 0, "podium_pct": 0, "top6_pct": 0})
+    tp = TEAM_PACE.get(team, {})
+    pit = get_pit_crew_for_team(team) or {}
 
-    # Normalized scoring (0-100)
+    # Normalized composite (0-100 scale relative to grid)
     all_composites = list(composites.values())
     max_comp = max(all_composites) if all_composites else 100
     min_comp = min(all_composites) if all_composites else 0
     comp_range = max_comp - min_comp if max_comp != min_comp else 1
-    comp_norm = (composite - min_comp) / comp_range * 100
-
-    # Weighted fantasy score
-    fantasy_score = (
-        cfg["composite_weight"] * comp_norm +
-        cfg["win_weight"] * mc["win_pct"] +
-        cfg["podium_weight"] * (mc["podium_pct"] / 100 * 100) +
-        cfg["form_weight"] * SEASON_MOMENTUM.get(driver, 30)
-    )
-
-    # Map to price range
-    price = cfg["driver_min_price"] + (fantasy_score / 100) * (cfg["driver_max_price"] - cfg["driver_min_price"])
-    price = round(max(cfg["driver_min_price"], min(cfg["driver_max_price"], price)), 1)
-
-    # Expected fantasy points per race (simplified F1 fantasy scoring)
-    exp_points = (
-        mc["win_pct"] / 100 * cfg["win_points"] +
-        mc["podium_pct"] / 100 * cfg["podium_points"] +
-        mc["top6_pct"] / 100 * cfg["top6_points"]
-    )
-
-    # Value rating: expected points per million spent
-    value_rating = round(exp_points / price, 3) if price > 0 else 0
+    composite_normalized = round((composite - min_comp) / comp_range * 100, 1)
 
     return {
         "driver": driver,
         "team": team,
-        "price": price,
-        "fantasy_score": round(fantasy_score, 1),
-        "expected_points": round(exp_points, 2),
-        "value_rating": value_rating,
+        # Core model outputs
         "composite": round(composite, 2),
+        "composite_normalized": composite_normalized,
         "win_pct": mc["win_pct"],
         "podium_pct": mc["podium_pct"],
         "top6_pct": mc["top6_pct"],
+        # Driver ratings
         "elo": DRIVER_ELO.get(driver, 1500),
         "momentum": SEASON_MOMENTUM.get(driver, 30),
+        "fastest_lap_propensity": FASTEST_LAP_PROPENSITY.get(driver, 20),
+        # Team metrics (relevant for this driver's car)
+        "team_pace": {
+            "power": tp.get("power", 0),
+            "aero": tp.get("aero", 0),
+            "traction": tp.get("traction", 0),
+            "tyre_deg": tp.get("tyre_deg", 0),
+            "reliability": tp.get("reliability", 0),
+        },
+        "team_form": TEAM_FORM.get(team, 50),
+        "pit_crew_consistency": pit.get("consistency_score", 50),
+        "pit_avg_time": pit.get("avg_time", 3.0),
     }
 
 
-def _calculate_constructor_price(team: str, composites: dict, mc_results: dict) -> dict:
-    """Calculate fantasy price for a constructor based on combined driver output."""
-    cfg = FANTASY_CONFIG
+def _build_constructor_metrics(team: str, composites: dict, mc_results: dict) -> dict:
+    """Build raw performance metrics for a constructor."""
     drivers = [d for d, t in GRID.items() if t == team]
     if not drivers:
         raise HTTPException(status_code=404, detail=f"Team '{team}' not found")
 
-    # Aggregate driver stats
-    total_win = sum(mc_results.get(d, {}).get("win_pct", 0) for d in drivers)
-    total_podium = sum(mc_results.get(d, {}).get("podium_pct", 0) for d in drivers)
-    total_top6 = sum(mc_results.get(d, {}).get("top6_pct", 0) for d in drivers)
-    avg_composite = sum(composites.get(d, 50) for d in drivers) / len(drivers)
-
-    # Team pace aggregate
     tp = TEAM_PACE.get(team, {})
-    pace_avg = sum(tp.get(k, 50) for k in ["power", "aero", "traction", "tyre_deg", "reliability"]) / 5
+    pit = get_pit_crew_for_team(team) or {}
 
-    # Team form
-    form = TEAM_FORM.get(team, 50)
+    # Aggregate driver probabilities
+    combined_win = round(sum(mc_results.get(d, {}).get("win_pct", 0) for d in drivers), 1)
+    combined_podium = round(sum(mc_results.get(d, {}).get("podium_pct", 0) for d in drivers), 1)
+    combined_top6 = round(sum(mc_results.get(d, {}).get("top6_pct", 0) for d in drivers), 1)
+    avg_composite = round(sum(composites.get(d, 50) for d in drivers) / len(drivers), 2)
+    avg_elo = round(sum(DRIVER_ELO.get(d, 1500) for d in drivers) / len(drivers))
 
-    # Normalized scoring
-    all_composites = list(composites.values())
-    max_comp = max(all_composites) if all_composites else 100
-    min_comp = min(all_composites) if all_composites else 0
-    comp_range = max_comp - min_comp if max_comp != min_comp else 1
-    comp_norm = (avg_composite - min_comp) / comp_range * 100
-
-    fantasy_score = (
-        0.3 * comp_norm +
-        0.25 * (total_win / 2) +  # normalized — max ~50% per driver
-        0.20 * (total_podium / 200 * 100) +
-        0.15 * (pace_avg / 100 * 100) +
-        0.10 * form
-    )
-
-    price = cfg["constructor_min_price"] + (fantasy_score / 100) * (cfg["constructor_max_price"] - cfg["constructor_min_price"])
-    price = round(max(cfg["constructor_min_price"], min(cfg["constructor_max_price"], price)), 1)
-
-    # Expected constructor points (both drivers combined)
-    exp_points = (
-        total_win / 100 * cfg["win_points"] +
-        total_podium / 100 * cfg["podium_points"] +
-        total_top6 / 100 * cfg["top6_points"]
-    )
-
-    value_rating = round(exp_points / price, 3) if price > 0 else 0
+    # Pace aggregate
+    pace_overall = round(sum(tp.get(k, 50) for k in ["power", "aero", "traction", "tyre_deg", "reliability"]) / 5, 1)
 
     return {
         "team": team,
         "drivers": drivers,
-        "price": price,
-        "fantasy_score": round(fantasy_score, 1),
-        "expected_points": round(exp_points, 2),
-        "value_rating": value_rating,
-        "avg_composite": round(avg_composite, 2),
-        "combined_win_pct": round(total_win, 1),
-        "combined_podium_pct": round(total_podium, 1),
-        "combined_top6_pct": round(total_top6, 1),
-        "team_form": form,
+        # Combined probabilities
+        "combined_win_pct": combined_win,
+        "combined_podium_pct": combined_podium,
+        "combined_top6_pct": combined_top6,
+        # Team-level metrics
+        "avg_composite": avg_composite,
+        "avg_elo": avg_elo,
+        "team_form": TEAM_FORM.get(team, 50),
+        # Pace profile
         "pace": {
             "power": tp.get("power", 0),
             "aero": tp.get("aero", 0),
             "traction": tp.get("traction", 0),
             "tyre_deg": tp.get("tyre_deg", 0),
             "reliability": tp.get("reliability", 0),
+            "overall": pace_overall,
+        },
+        # Pit crew
+        "pit_crew": {
+            "consistency_score": pit.get("consistency_score", 50),
+            "avg_time": pit.get("avg_time", 3.0),
+            "best_time": pit.get("best_time", 2.5),
+            "error_rate": pit.get("error_rate", 5.0),
+            "trend": pit.get("trend", "stable"),
+        },
+        # Weather traits
+        "weather_traits": {
+            "cold_tyre": tp.get("cold_tyre", 0.85),
+            "crosswind": tp.get("crosswind", 0.98),
+            "rain": tp.get("rain", 0.80),
         },
     }
 
@@ -258,11 +220,11 @@ def root():
             "predictions": "/api/predictions",
             "predictions_driver": "/api/predictions/{driver}",
             "value_bets": "/api/value-bets",
-            "fantasy_drivers": "/api/fantasy/drivers",
-            "fantasy_driver": "/api/fantasy/drivers/{driver}",
-            "fantasy_constructors": "/api/fantasy/constructors",
-            "fantasy_constructor": "/api/fantasy/constructors/{team}",
-            "fantasy_all": "/api/fantasy/all",
+            "rankings_drivers": "/api/rankings/drivers",
+            "rankings_driver": "/api/rankings/drivers/{driver}",
+            "rankings_constructors": "/api/rankings/constructors",
+            "rankings_constructor": "/api/rankings/constructors/{team}",
+            "rankings_all": "/api/rankings/all",
             "team_pace": "/api/teams/pace",
             "elo_ratings": "/api/drivers/elo",
             "pitstops": "/api/pitstops",
@@ -403,85 +365,102 @@ def get_value_bets(
     }
 
 
-# ── Fantasy Pricing ──
+# ── Rankings & Metrics (for downstream pricing engines) ──
 
-@app.get("/api/fantasy/drivers", tags=["Fantasy"])
-def get_fantasy_drivers(
-    sort_by: str = Query("price", description="Sort by: price, value_rating, expected_points, fantasy_score"),
+@app.get("/api/rankings/drivers", tags=["Rankings"])
+def get_driver_rankings(
+    sort_by: str = Query("composite", description="Sort by: composite, win_pct, podium_pct, top6_pct, elo, momentum"),
 ):
-    """Get fantasy prices for all drivers based on model predictions.
+    """Get ranked driver metrics for all 22 drivers.
     
-    Prices range from 5.0M to 30.0M based on composite score, 
-    win probability, podium probability, and season momentum.
-    Value rating = expected points per million spent.
+    Returns raw model outputs — composite score, MC probabilities, Elo,
+    momentum, fastest lap propensity, team pace, pit crew data.
+    No pricing — your app's pricing engine uses these metrics as inputs.
     """
     composites, mc_results, _, _ = _get_cached()
     
     drivers = []
     for driver in GRID:
-        drivers.append(_calculate_driver_price(driver, composites, mc_results))
+        drivers.append(_build_driver_metrics(driver, composites, mc_results))
 
-    valid_sorts = {"price", "value_rating", "expected_points", "fantasy_score"}
-    key = sort_by if sort_by in valid_sorts else "price"
+    valid_sorts = {"composite", "win_pct", "podium_pct", "top6_pct", "elo", "momentum"}
+    key = sort_by if sort_by in valid_sorts else "composite"
     drivers.sort(key=lambda x: x[key], reverse=True)
+
+    # Add rank
+    for i, d in enumerate(drivers):
+        d["rank"] = i + 1
 
     return {
         "race": RACE["name"],
         "round": RACE["round"],
-        "pricing_model": "composite_weighted",
-        "budget_total": FANTASY_CONFIG["total_budget"],
-        "price_range": f"{FANTASY_CONFIG['driver_min_price']}M - {FANTASY_CONFIG['driver_max_price']}M",
+        "season": RACE["year"],
+        "circuit": RACE["circuit"],
+        "sorted_by": key,
         "drivers": drivers,
     }
 
 
-@app.get("/api/fantasy/drivers/{driver}", tags=["Fantasy"])
-def get_fantasy_driver(driver: str):
-    """Get fantasy price and value analysis for a specific driver."""
+@app.get("/api/rankings/drivers/{driver}", tags=["Rankings"])
+def get_driver_ranking(driver: str):
+    """Get full metrics for a specific driver."""
     match = None
     for d in GRID:
         if d.lower() == driver.lower():
             match = d
             break
     if not match:
-        raise HTTPException(status_code=404, detail=f"Driver '{driver}' not found")
+        raise HTTPException(status_code=404, detail=f"Driver '{driver}' not found. Available: {list(GRID.keys())}")
 
     composites, mc_results, _, _ = _get_cached()
-    return _calculate_driver_price(match, composites, mc_results)
+    metrics = _build_driver_metrics(match, composites, mc_results)
+
+    # Add position distribution from MC
+    mc = mc_results.get(match, {})
+    metrics["position_distribution"] = {
+        str(k): v for k, v in sorted(mc.get("positions", {}).items())
+    }
+    metrics["race"] = RACE["name"]
+    metrics["circuit"] = RACE["circuit"]
+    return metrics
 
 
-@app.get("/api/fantasy/constructors", tags=["Fantasy"])
-def get_fantasy_constructors(
-    sort_by: str = Query("price", description="Sort by: price, value_rating, expected_points"),
+@app.get("/api/rankings/constructors", tags=["Rankings"])
+def get_constructor_rankings(
+    sort_by: str = Query("combined_win_pct", description="Sort by: combined_win_pct, combined_podium_pct, avg_composite, avg_elo, team_form"),
 ):
-    """Get fantasy prices for all constructors.
+    """Get ranked constructor metrics for all 11 teams.
     
-    Constructor prices are based on combined driver performance, 
-    team pace, and team form. Range: 5.0M to 25.0M.
+    Returns combined driver probabilities, team pace profile, pit crew stats,
+    weather traits, and form. No pricing — feed into your pricing engine.
     """
     composites, mc_results, _, _ = _get_cached()
     
     teams = list(set(GRID.values()))
     constructors = []
     for team in teams:
-        constructors.append(_calculate_constructor_price(team, composites, mc_results))
+        constructors.append(_build_constructor_metrics(team, composites, mc_results))
 
-    valid_sorts = {"price", "value_rating", "expected_points"}
-    key = sort_by if sort_by in valid_sorts else "price"
+    valid_sorts = {"combined_win_pct", "combined_podium_pct", "avg_composite", "avg_elo", "team_form"}
+    key = sort_by if sort_by in valid_sorts else "combined_win_pct"
     constructors.sort(key=lambda x: x[key], reverse=True)
+
+    for i, c in enumerate(constructors):
+        c["rank"] = i + 1
 
     return {
         "race": RACE["name"],
         "round": RACE["round"],
-        "pricing_model": "combined_driver_team",
-        "price_range": f"{FANTASY_CONFIG['constructor_min_price']}M - {FANTASY_CONFIG['constructor_max_price']}M",
+        "season": RACE["year"],
+        "circuit": RACE["circuit"],
+        "sorted_by": key,
         "constructors": constructors,
     }
 
 
-@app.get("/api/fantasy/constructors/{team}", tags=["Fantasy"])
-def get_fantasy_constructor(team: str):
-    """Get fantasy price and value analysis for a specific constructor."""
+@app.get("/api/rankings/constructors/{team}", tags=["Rankings"])
+def get_constructor_ranking(team: str):
+    """Get full metrics for a specific constructor."""
     match = None
     for t in set(GRID.values()):
         if t.lower().replace(" ", "") == team.lower().replace(" ", ""):
@@ -491,38 +470,41 @@ def get_fantasy_constructor(team: str):
         raise HTTPException(status_code=404, detail=f"Team '{team}' not found. Available: {list(set(GRID.values()))}")
 
     composites, mc_results, _, _ = _get_cached()
-    return _calculate_constructor_price(match, composites, mc_results)
+    return _build_constructor_metrics(match, composites, mc_results)
 
 
-@app.get("/api/fantasy/all", tags=["Fantasy"])
-def get_fantasy_all():
-    """Get complete fantasy data — all driver and constructor prices in one call.
+@app.get("/api/rankings/all", tags=["Rankings"])
+def get_all_rankings():
+    """Get complete driver and constructor metrics in one call.
     
-    Ideal for a fantasy app that needs to display the full price sheet.
-    Includes value ratings sorted by best value first.
+    Designed for downstream pricing engines that need the full dataset.
+    Drivers sorted by composite (descending), constructors by combined win %.
     """
     composites, mc_results, _, _ = _get_cached()
 
     drivers = []
     for driver in GRID:
-        drivers.append(_calculate_driver_price(driver, composites, mc_results))
-    drivers.sort(key=lambda x: x["value_rating"], reverse=True)
+        drivers.append(_build_driver_metrics(driver, composites, mc_results))
+    drivers.sort(key=lambda x: x["composite"], reverse=True)
+    for i, d in enumerate(drivers):
+        d["rank"] = i + 1
 
     teams = list(set(GRID.values()))
     constructors = []
     for team in teams:
-        constructors.append(_calculate_constructor_price(team, composites, mc_results))
-    constructors.sort(key=lambda x: x["value_rating"], reverse=True)
+        constructors.append(_build_constructor_metrics(team, composites, mc_results))
+    constructors.sort(key=lambda x: x["combined_win_pct"], reverse=True)
+    for i, c in enumerate(constructors):
+        c["rank"] = i + 1
 
     return {
         "race": RACE["name"],
         "round": RACE["round"],
         "season": RACE["year"],
-        "budget": FANTASY_CONFIG["total_budget"],
+        "circuit": RACE["circuit"],
+        "simulations": MC_SETTINGS["n_simulations"],
         "drivers": drivers,
         "constructors": constructors,
-        "best_value_drivers": [d["driver"] for d in drivers[:5]],
-        "best_value_constructors": [c["team"] for c in constructors[:3]],
     }
 
 
