@@ -3,11 +3,11 @@
     {
       "driver": "Antonelli",
       "bet_type": "win",
-      "model_pct": 37.6,
+      "model_pct": 36.9,
       "bookie_odds": 4.75,
       "implied_pct": 21.1,
-      "edge_pp": 16.5,
-      "kelly_fraction": 0.0524,
+      "edge_pp": 15.8,
+      "kelly_fraction": 0.0502,
       "verdict": "BACK"
     },
     {
@@ -43,20 +43,20 @@
     {
       "driver": "Bearman",
       "bet_type": "win",
-      "model_pct": 0.0,
+      "model_pct": 0.1,
       "bookie_odds": 67.0,
       "implied_pct": 1.5,
-      "edge_pp": -1.5,
+      "edge_pp": -1.4,
       "kelly_fraction": 0.0,
       "verdict": "NEUTRAL"
     },
     {
       "driver": "Norris",
       "bet_type": "win",
-      "model_pct": 0.1,
+      "model_pct": 0.0,
       "bookie_odds": 51.0,
       "implied_pct": 2.0,
-      "edge_pp": -1.9,
+      "edge_pp": -2.0,
       "kelly_fraction": 0.0,
       "verdict": "NEUTRAL"
     },
@@ -73,10 +73,10 @@
     {
       "driver": "Leclerc",
       "bet_type": "win",
-      "model_pct": 5.6,
+      "model_pct": 5.4,
       "bookie_odds": 12.0,
       "implied_pct": 8.3,
-      "edge_pp": -2.7,
+      "edge_pp": -2.9,
       "kelly_fraction": 0.0,
       "verdict": "FADE"
     },
@@ -103,10 +103,10 @@
     {
       "driver": "Russell",
       "bet_type": "win",
-      "model_pct": 52.2,
+      "model_pct": 53.2,
       "bookie_odds": 1.7,
       "implied_pct": 58.8,
-      "edge_pp": -6.6,
+      "edge_pp": -5.6,
       "kelly_fraction": 0.0,
       "verdict": "FADE"
     }
@@ -115,50 +115,50 @@
     {
       "driver": "Antonelli",
       "bet_type": "podium",
-      "model_pct": 88.3,
+      "model_pct": 87.7,
       "bookie_odds": 1.8,
       "implied_pct": 55.6,
-      "edge_pp": 32.7,
-      "kelly_fraction": 0.1842,
+      "edge_pp": 32.1,
+      "kelly_fraction": 0.1808,
       "verdict": "BACK"
     },
     {
       "driver": "Leclerc",
       "bet_type": "podium",
-      "model_pct": 58.9,
+      "model_pct": 58.2,
       "bookie_odds": 3.5,
       "implied_pct": 28.6,
-      "edge_pp": 30.3,
-      "kelly_fraction": 0.1061,
+      "edge_pp": 29.6,
+      "kelly_fraction": 0.1037,
       "verdict": "BACK"
     },
     {
       "driver": "Hamilton",
       "bet_type": "podium",
-      "model_pct": 54.8,
+      "model_pct": 55.4,
       "bookie_odds": 3.0,
       "implied_pct": 33.3,
-      "edge_pp": 21.5,
-      "kelly_fraction": 0.0805,
+      "edge_pp": 22.1,
+      "kelly_fraction": 0.0827,
       "verdict": "BACK"
     },
     {
       "driver": "Russell",
       "bet_type": "podium",
-      "model_pct": 90.1,
+      "model_pct": 90.2,
       "bookie_odds": 1.2,
       "implied_pct": 83.3,
-      "edge_pp": 6.8,
-      "kelly_fraction": 0.1015,
+      "edge_pp": 6.9,
+      "kelly_fraction": 0.103,
       "verdict": "BACK"
     },
     {
       "driver": "Bearman",
       "bet_type": "podium",
-      "model_pct": 4.2,
+      "model_pct": 4.5,
       "bookie_odds": 20.0,
       "implied_pct": 5.0,
-      "edge_pp": -0.8,
+      "edge_pp": -0.5,
       "kelly_fraction": 0.0,
       "verdict": "NEUTRAL"
     },
@@ -185,10 +185,10 @@
     {
       "driver": "Norris",
       "bet_type": "podium",
-      "model_pct": 2.4,
+      "model_pct": 2.6,
       "bookie_odds": 12.0,
       "implied_pct": 8.3,
-      "edge_pp": -5.9,
+      "edge_pp": -5.7,
       "kelly_fraction": 0.0,
       "verdict": "FADE"
     },
@@ -205,10 +205,10 @@
     {
       "driver": "Verstappen",
       "bet_type": "podium",
-      "model_pct": 0.4,
+      "model_pct": 0.5,
       "bookie_odds": 8.0,
       "implied_pct": 12.5,
-      "edge_pp": -12.1,
+      "edge_pp": -12.0,
       "kelly_fraction": 0.0,
       "verdict": "FADE"
     }
