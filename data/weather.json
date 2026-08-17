@@ -1,7 +1,7 @@
 {
-  "air_temp_c": 26.7,
-  "rain_prob": 0.08,
-  "wind_kph": 15.3,
-  "humidity": 0.7,
-  "track_temp_c": 42.72
+  "air_temp_c": 25.1,
+  "rain_prob": 0.2,
+  "wind_kph": 7.0,
+  "humidity": 0.89,
+  "track_temp_c": 40.160000000000004
 }
