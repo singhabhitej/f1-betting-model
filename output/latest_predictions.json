@@ -14,8 +14,8 @@
       "team": "Mercedes",
       "composite": 97.02,
       "win_pct": 46.7,
-      "podium_pct": 87.6,
-      "top6_pct": 93.9,
+      "podium_pct": 87.2,
+      "top6_pct": 93.6,
       "elo": 2170
     },
     {
@@ -24,25 +24,25 @@
       "composite": 95.04,
       "win_pct": 35.1,
       "podium_pct": 84.2,
-      "top6_pct": 93.3,
+      "top6_pct": 93.9,
       "elo": 2130
     },
     {
       "driver": "Hamilton",
       "team": "Ferrari",
       "composite": 89.14,
-      "win_pct": 9.3,
-      "podium_pct": 60.6,
-      "top6_pct": 92.8,
+      "win_pct": 9.4,
+      "podium_pct": 60.5,
+      "top6_pct": 93.2,
       "elo": 2020
     },
     {
       "driver": "Leclerc",
       "team": "Ferrari",
       "composite": 88.9,
-      "win_pct": 8.6,
-      "podium_pct": 58.7,
-      "top6_pct": 92.6,
+      "win_pct": 8.7,
+      "podium_pct": 59.5,
+      "top6_pct": 93.4,
       "elo": 2040
     },
     {
@@ -50,18 +50,9 @@
       "team": "McLaren",
       "composite": 74.92,
       "win_pct": 0.1,
-      "podium_pct": 4.0,
-      "top6_pct": 71.4,
-      "elo": 1980
-    },
-    {
-      "driver": "Bearman",
-      "team": "Haas",
-      "composite": 75.08,
-      "win_pct": 0.1,
       "podium_pct": 3.6,
-      "top6_pct": 59.4,
-      "elo": 1870
+      "top6_pct": 70.7,
+      "elo": 1980
     },
     {
       "driver": "Verstappen",
@@ -69,7 +60,7 @@
       "composite": 66.32,
       "win_pct": 0.0,
       "podium_pct": 0.1,
-      "top6_pct": 15.5,
+      "top6_pct": 15.2,
       "elo": 1950
     },
     {
@@ -87,7 +78,7 @@
       "composite": 69.03,
       "win_pct": 0.0,
       "podium_pct": 0.6,
-      "top6_pct": 38.9,
+      "top6_pct": 38.5,
       "elo": 1920
     },
     {
@@ -114,7 +105,7 @@
       "composite": 63.39,
       "win_pct": 0.0,
       "podium_pct": 0.0,
-      "top6_pct": 4.8,
+      "top6_pct": 5.0,
       "elo": 1820
     },
     {
@@ -127,12 +118,21 @@
       "elo": 1710
     },
     {
+      "driver": "Bearman",
+      "team": "Haas",
+      "composite": 75.08,
+      "win_pct": 0.0,
+      "podium_pct": 3.6,
+      "top6_pct": 59.3,
+      "elo": 1870
+    },
+    {
       "driver": "Ocon",
       "team": "Haas",
       "composite": 65.63,
       "win_pct": 0.0,
       "podium_pct": 0.1,
-      "top6_pct": 10.1,
+      "top6_pct": 10.0,
       "elo": 1730
     },
     {
@@ -140,8 +140,8 @@
       "team": "Racing Bulls",
       "composite": 69.42,
       "win_pct": 0.0,
-      "podium_pct": 0.6,
-      "top6_pct": 26.3,
+      "podium_pct": 0.5,
+      "top6_pct": 26.1,
       "elo": 1800
     },
     {
@@ -223,21 +223,21 @@
       {
         "driver": "Leclerc",
         "bet_type": "win",
-        "model_pct": 8.6,
+        "model_pct": 8.7,
         "bookie_odds": 12.0,
         "implied_pct": 8.3,
-        "edge_pp": 0.3,
-        "kelly_fraction": 0.0007,
+        "edge_pp": 0.4,
+        "kelly_fraction": 0.001,
         "verdict": "NEUTRAL"
       },
       {
         "driver": "Hamilton",
         "bet_type": "win",
-        "model_pct": 9.3,
+        "model_pct": 9.4,
         "bookie_odds": 11.0,
         "implied_pct": 9.1,
-        "edge_pp": 0.2,
-        "kelly_fraction": 0.0006,
+        "edge_pp": 0.3,
+        "kelly_fraction": 0.0008,
         "verdict": "NEUTRAL"
       },
       {
@@ -273,10 +273,10 @@
       {
         "driver": "Bearman",
         "bet_type": "win",
-        "model_pct": 0.1,
+        "model_pct": 0.0,
         "bookie_odds": 67.0,
         "implied_pct": 1.5,
-        "edge_pp": -1.4,
+        "edge_pp": -1.5,
         "kelly_fraction": 0.0,
         "verdict": "NEUTRAL"
       },
@@ -325,11 +325,11 @@
       {
         "driver": "Leclerc",
         "bet_type": "podium",
-        "model_pct": 58.7,
+        "model_pct": 59.5,
         "bookie_odds": 3.5,
         "implied_pct": 28.6,
-        "edge_pp": 30.1,
-        "kelly_fraction": 0.1055,
+        "edge_pp": 30.9,
+        "kelly_fraction": 0.1082,
         "verdict": "BACK"
       },
       {
@@ -345,21 +345,21 @@
       {
         "driver": "Hamilton",
         "bet_type": "podium",
-        "model_pct": 60.6,
+        "model_pct": 60.5,
         "bookie_odds": 3.0,
         "implied_pct": 33.3,
-        "edge_pp": 27.3,
-        "kelly_fraction": 0.1022,
+        "edge_pp": 27.2,
+        "kelly_fraction": 0.1019,
         "verdict": "BACK"
       },
       {
         "driver": "Russell",
         "bet_type": "podium",
-        "model_pct": 87.6,
+        "model_pct": 87.2,
         "bookie_odds": 1.2,
         "implied_pct": 83.3,
-        "edge_pp": 4.3,
-        "kelly_fraction": 0.064,
+        "edge_pp": 3.9,
+        "kelly_fraction": 0.058,
         "verdict": "BACK"
       },
       {
@@ -395,10 +395,10 @@
       {
         "driver": "Norris",
         "bet_type": "podium",
-        "model_pct": 4.0,
+        "model_pct": 3.6,
         "bookie_odds": 12.0,
         "implied_pct": 8.3,
-        "edge_pp": -4.3,
+        "edge_pp": -4.7,
         "kelly_fraction": 0.0,
         "verdict": "FADE"
       },
